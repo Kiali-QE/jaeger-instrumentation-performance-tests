@@ -4,6 +4,7 @@ import com.uber.jaeger.Configuration;
 import com.uber.jaeger.Configuration.ReporterConfiguration;
 import com.uber.jaeger.Configuration.SamplerConfiguration;
 import com.uber.jaeger.samplers.ProbabilisticSampler;
+import io.opentracing.NoopTracerFactory;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 
@@ -33,11 +34,14 @@ public class TracingContextListener implements ServletContextListener {
     @Produces
     @Singleton
     public static io.opentracing.Tracer jaegerTracer() {
-        String serviceName = "wildfly-swarm-demo";
+        /*String serviceName = "wildfly-swarm-demo";
         SamplerConfiguration samplerConfiguration = new SamplerConfiguration(ProbabilisticSampler.TYPE, 1);
         ReporterConfiguration reporterConfiguration = new ReporterConfiguration();
         Configuration tracerConfiguration = new Configuration(serviceName, samplerConfiguration, reporterConfiguration);
 
-        return tracerConfiguration.getTracer();
+        return tracerConfiguration.getTracer(); */
+        Tracer noopTracer = NoopTracerFactory.create();
+
+        return noopTracer;
     }
 }

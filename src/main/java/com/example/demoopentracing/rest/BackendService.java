@@ -4,8 +4,10 @@ import io.opentracing.ActiveSpan;
 
 import javax.inject.Inject;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class BackendService {
+    public static Logger logger = Logger.getLogger(BackendService.class.getName());
 
     @Inject
     private io.opentracing.Tracer tracer;
@@ -22,6 +24,11 @@ public class BackendService {
     }
 
     private void anotherAction() {
-        tracer.activeSpan().setTag("anotherAction", "data");
+        ActiveSpan activeSpan = tracer.activeSpan();
+        if (activeSpan == null) {
+            logger.warning("tracer.activeSpan returned null!");
+        } else {
+            activeSpan.setTag("anotherAction", "data");
+        }
     }
 }
