@@ -12,3 +12,8 @@ The following environment variables can be used to alter the default behavior:
 + SLEEP_INTERVAL The number of milliseconds each action should sleep.  This defaults to 10.
 + TEST_SERVICE_NAME Service name to use when reporting spans to jaeger.  Defaults to "wildfly-swarm-opentracing-demo"
 
+## Docker
+
+To create a docker image `mvn clean install -Pdocker`
+
+To run it `docker run -p 8080:8080 wildfly-swarm-opentracing`

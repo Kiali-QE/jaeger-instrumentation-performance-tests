@@ -38,6 +38,11 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
         <version>${version.wildfly.swarm}</version>
+        <configuration>
+          <properties>
+            <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+          </properties>
+        </configuration>
         
         <executions>
           <execution>
@@ -78,4 +83,72 @@
       <version>${version.jaeger.core}</version>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <configuration>
+              <images>
+                <image>
+                  <name>${project.build.finalName}</name>
+                  <run>
+                    <ports>
+                      <port>8080:8080</port>
+                    </ports>
+                  </run>
+                  <build>
+                    <from>java:openjdk-8-jdk</from>
+                    <ports>
+                      <port>8080</port>
+                    </ports>
+                    <assembly>
+                      <basedir>/</basedir>
+                      <inline>
+                        <files>
+                          <file>
+                            <source>${project.build.directory}/${project.artifactId}-swarm.jar</source>
+                            <outputDirectory>/opt</outputDirectory>
+                          </file>
+                        </files>
+                      </inline>
+                    </assembly>
+                    <entryPoint>
+                      <shell>java -jar /opt/${project.artifactId}-swarm.jar</shell>
+                    </entryPoint>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>pre-integration-test</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>post-integration-test</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
