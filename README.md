@@ -23,7 +23,7 @@ To run it `docker run -p 8080:8080 wildfly-swarm-opentracing`
 To run the performance test, use the following command: 
     `jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx\
         -JTHREADCOUNT=100 -JITERATIONS=1000 -JRAMPUP=0 \
-        -JURL=localhost -JPORT=8080 --logfile log.txt 
+        -JURL=localhost -JPORT=8080 --logfile log.txt \ 
         --reportatendofloadtests --reportoutputfolder reports`
         
 + *THREADCOUNT* is the number of client threads to run
