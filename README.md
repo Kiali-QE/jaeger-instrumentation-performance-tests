@@ -18,6 +18,13 @@ To create a docker image `mvn clean install -Pdocker`
 
 To run it `docker run -p 8080:8080 wildfly-swarm-opentracing`
 
+## Openshift
+
+To deploy to Openshift
+
++ Use the `oc` command to login to openshift 
++ `mvn `fabric8:deploy -Popenshift`
+
 ## JMeter
 
 To run the performance test, use the following command: 
