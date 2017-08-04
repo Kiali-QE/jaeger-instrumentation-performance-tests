@@ -1,9 +1,14 @@
 package com.example.demoopentracing.rest;
 
-import com.uber.jaeger.Configuration;
-import com.uber.jaeger.Configuration.ReporterConfiguration;
-import com.uber.jaeger.Configuration.SamplerConfiguration;
+import com.uber.jaeger.metrics.Metrics;
+import com.uber.jaeger.metrics.NullStatsReporter;
+import com.uber.jaeger.metrics.StatsFactoryImpl;
+import com.uber.jaeger.reporters.RemoteReporter;
+import com.uber.jaeger.reporters.Reporter;
 import com.uber.jaeger.samplers.ProbabilisticSampler;
+import com.uber.jaeger.samplers.Sampler;
+import com.uber.jaeger.senders.Sender;
+import com.uber.jaeger.senders.UdpSender;
 import io.opentracing.NoopTracerFactory;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
@@ -20,6 +25,13 @@ import java.util.logging.Logger;
 @WebListener
 public class TracingContextListener implements ServletContextListener {
     private static Map<String, String> envs = System.getenv();
+
+    private static Integer JAEGER_FLUSH_INTERVAL = new Integer(envs.getOrDefault("JAEGER_FLUSH_INTERVAL", "100"));
+    private static Integer JAEGER_MAX_PACKET_SIZE = new Integer(envs.getOrDefault("JAEGER_MAX_PACKET_SIZE", "0"));
+    private static Integer JAEGER_MAX_QUEUE_SIZE = new Integer(envs.getOrDefault("JAEGER_MAX_QUEUE_SIZE", "50"));
+    private static Double JAEGER_SAMPLING_RATE = new Double(envs.getOrDefault("JAEGER_SAMPLING_RATE", "1.0"));
+    private static Integer JAEGER_UDP_PORT = new Integer(envs.getOrDefault("JAEGER_UDP_PORT", "5775"));
+    private static String JAEGER_SERVER_HOST = envs.getOrDefault("JAEGER_SERVER_HOST", "localhost");
     private static final String TRACER_TYPE = envs.getOrDefault("TRACER_TYPE", "jaeger");
     private static final String TEST_SERVICE_NAME = envs.getOrDefault("TEST_SERVICE_NAME", "wildfly-swarm-opentracing-demo");
     private static Logger logger = Logger.getLogger(TracingContextListener.class.getName());
@@ -41,13 +53,15 @@ public class TracingContextListener implements ServletContextListener {
         Tracer tracer;
 
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
-            logger.info("Using JAEGER tracer, Service Name " + TEST_SERVICE_NAME);
+            logger.info("Using JAEGER tracer using host [" + JAEGER_SERVER_HOST + "] port [" + JAEGER_UDP_PORT +
+                    " Service Name " + TEST_SERVICE_NAME);
 
-            SamplerConfiguration samplerConfiguration = new SamplerConfiguration(ProbabilisticSampler.TYPE, 1);
-            ReporterConfiguration reporterConfiguration = new ReporterConfiguration();
-            Configuration tracerConfiguration = new Configuration(TEST_SERVICE_NAME, samplerConfiguration, reporterConfiguration);
-
-            tracer = tracerConfiguration.getTracer();
+            Sender sender = new UdpSender(JAEGER_SERVER_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
+            Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
+            Reporter reporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
+            Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
+            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME, reporter, sampler)
+                    .build();
         } else {
             logger.info("Using NOOP Tracer");
             tracer = NoopTracerFactory.create();
