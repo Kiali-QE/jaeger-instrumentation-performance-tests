@@ -15,6 +15,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <fabric8.maven.plugin.version>3.5.0</fabric8.maven.plugin.version>
     <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
     <version.jaeger.core>0.20.5</version.jaeger.core>
     <version.opentracing.jaxrs>0.0.8</version.opentracing.jaxrs>
@@ -145,6 +146,28 @@
                 <phase>post-integration-test</phase>
                 <goals>
                   <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>openshift</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+            <version>${fabric8.maven.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>fmp</id>
+                <goals>
+                  <goal>resource</goal>
+                  <goal>helm</goal>
+                  <goal>build</goal>
                 </goals>
               </execution>
             </executions>
