@@ -19,6 +19,9 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -31,7 +34,8 @@ public class TracingContextListener implements ServletContextListener {
     private static Integer JAEGER_MAX_QUEUE_SIZE = new Integer(envs.getOrDefault("JAEGER_MAX_QUEUE_SIZE", "50"));
     private static Double JAEGER_SAMPLING_RATE = new Double(envs.getOrDefault("JAEGER_SAMPLING_RATE", "1.0"));
     private static Integer JAEGER_UDP_PORT = new Integer(envs.getOrDefault("JAEGER_UDP_PORT", "5775"));
-    private static String JAEGER_SERVER_HOST = envs.getOrDefault("JAEGER_SERVER_HOST", "localhost");
+    // FIXME hardcoded jaeger-agent-host is a hack
+    private static String JAEGER_AGENT_HOST = envs.getOrDefault("JAEGER_AGENT_HOST", "jaeger-agent.myproject.svc");
     private static final String TRACER_TYPE = envs.getOrDefault("TRACER_TYPE", "jaeger");
     private static final String TEST_SERVICE_NAME = envs.getOrDefault("TEST_SERVICE_NAME", "wildfly-swarm-opentracing-demo");
     private static Logger logger = Logger.getLogger(TracingContextListener.class.getName());
@@ -52,11 +56,20 @@ public class TracingContextListener implements ServletContextListener {
     public static io.opentracing.Tracer jaegerTracer() {
         Tracer tracer;
 
+        logger.warning("****** HACK HACK HACK ********");
+        logger.warning("******* REMOVE THIS **********");
+        List<String> evNames = new ArrayList<>(envs.keySet());
+        Collections.sort(evNames);
+        for (String evName : evNames) {
+            String value = envs.get(evName);
+            logger.info(">>> " + evName + ": " + value);
+        }
+
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
-            logger.info("Using JAEGER tracer using host [" + JAEGER_SERVER_HOST + "] port [" + JAEGER_UDP_PORT +
+            logger.info("Using JAEGER tracer using host [" + JAEGER_AGENT_HOST + "] port [" + JAEGER_UDP_PORT +
                     " Service Name " + TEST_SERVICE_NAME);
 
-            Sender sender = new UdpSender(JAEGER_SERVER_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
+            Sender sender = new UdpSender(JAEGER_AGENT_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
             Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
             Reporter reporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
             Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);

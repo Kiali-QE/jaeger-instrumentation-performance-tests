@@ -16,7 +16,7 @@ The following environment variables can be used to alter the default behavior:
 
 To create a docker image `mvn clean install -Pdocker`
 
-To run it `docker run -p 8080:8080 wildfly-swarm-opentracing`
+To run it `docker run -p 8080:8080 -eJAEGER_AGENT_HOST=${real-localhost-ip} wildfly-swarm-opentracing`
 
 ## Openshift
 
