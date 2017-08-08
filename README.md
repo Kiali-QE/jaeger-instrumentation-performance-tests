@@ -28,10 +28,7 @@ To deploy to Openshift
 ## JMeter
 
 To run the performance test, use the following command: 
-    `jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx\
-        -JTHREADCOUNT=100 -JITERATIONS=1000 -JRAMPUP=0 \
-        -JURL=localhost -JPORT=8080 --logfile log.txt \ 
-        --reportatendofloadtests --reportoutputfolder reports`
+    `jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=100 -JITERATIONS=1000 -JRAMPUP=0 -JURL=localhost -JPORT=8080 --logfile log.txt --reportatendofloadtests --reportoutputfolder reports`
         
 + *THREADCOUNT* is the number of client threads to run
 + *ITERATIONS* is the number of iterations each client will make
