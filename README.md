@@ -41,5 +41,17 @@ and `/spanWithChild`.  In addition to the variables above, there are two others 
 + *DELAY1* sets a delay after hitting `/singleSpan`, default is *5* milliseconds
 + *DELAY2* sets a delay after hitting `/spanWithChild`, default is *5* milliseconds
 
+## Jenkins Job
+
+The Jenkins job that runs this should allow setting the following parameters
+
++ *TRACER_TYPE* to JAEGER, NOOP, or NONE
++ *JMETER_CLIENT_COUNT* The number of client threads JMeter should create
++ *ITERATIONS* The number of iterations each client should execute
++ *RAMPUP* The number of seconds to take to start all clients
++ *DELAY1* delay after hitting `/singleSpan`
++ *DELAY2* delay after hitting `/spanWithChild`
+
+
 
  

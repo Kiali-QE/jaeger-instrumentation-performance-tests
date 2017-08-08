@@ -6,8 +6,8 @@ pipeline {
             steps {
                 sh "env | sort"
                 script {
-                    currentBuild.displayName = env.BUILD_TAG
-                    currentBuild.description = "The best description."
+                    currentBuild.displayName = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS
+                    currentBuild.description = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations"
                 }
             }
         }
@@ -54,12 +54,10 @@ pipeline {
                         gunzip apache-jmeter-3.2.tgz
                         tar -xf apache-jmeter-3.2.tar
                         rm -rf log.txt reports
-                        export THREADCOUNT=10
-                        export ITERATIONS=25000
-                        export RAMPUP=30
+
                         export URL=wildfly-swarm-opentracing.myproject.svc
                         export PORT=8080
-                        ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${THREADCOUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${URL} -JPORT=${PORT} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
+                        ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
 
                     '''
                 }
