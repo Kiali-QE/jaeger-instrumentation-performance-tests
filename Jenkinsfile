@@ -55,7 +55,7 @@ pipeline {
                         tar -xf apache-jmeter-3.2.tar
                         rm -rf log.txt reports
 
-                        export URL=wildfly-swarm-opentracing.myproject.svc
+                        export URL=wildfly-swarm-opentracing.jaeger-performance.svc
                         export PORT=8080
                         ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
 

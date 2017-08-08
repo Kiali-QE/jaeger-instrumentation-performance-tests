@@ -25,6 +25,8 @@ To deploy to Openshift
 + Use the `oc` command to login to openshift 
 + `mvn `fabric8:deploy -Popenshift`
 
+NOTE: Currently running on Openshift assumes a project name of *jaeger-performance"
+
 ## JMeter
 
 To run the performance test, use the following command: 
