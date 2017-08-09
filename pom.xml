@@ -15,7 +15,7 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <fabric8.maven.plugin.version>3.5.0</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.22</fabric8.maven.plugin.version>
     <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
     <version.jaeger.core>0.20.5</version.jaeger.core>
     <version.opentracing.jaxrs>0.0.8</version.opentracing.jaxrs>
