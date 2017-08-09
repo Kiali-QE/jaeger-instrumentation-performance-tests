@@ -33,13 +33,19 @@ pipeline {
         }
         stage('Deploy wildfly-swarm example'){
             steps{
-                git 'https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git'
+                //git 'https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git'
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     script {
                         if (env.TRACER_TYPE == 'NONE') {
                             sh 'git checkout no-tracing'
                         }
                     }
+                    if (env.TRACER_TYPE == 'JAEGER') {
+                        git 'https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git'
+                    } else {
+                        git branch: 'no-tracing', url: 'https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git'
+                    }
+                    sh 'git status'
                     sh 'mvn fabric8:deploy -Popenshift'
                 }
             }
