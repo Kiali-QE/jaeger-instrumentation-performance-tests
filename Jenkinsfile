@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Set name and desription') {
             steps {
-                sh "env | sort"
                 script {
                     currentBuild.displayName = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS
                     currentBuild.description = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations"
@@ -33,7 +32,6 @@ pipeline {
         }
         stage('Deploy wildfly-swarm example'){
             steps{
-                //git 'https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git'
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     script {
                         if (env.TRACER_TYPE == 'JAEGER') {
@@ -55,7 +53,6 @@ pipeline {
         stage('Run JMeter Test') {
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
-                    sh "env | sort"
                     sh '''
                         rm -rf apache-jmeter*
                         curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
