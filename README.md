@@ -74,7 +74,7 @@ Once you can log onto Jenkins, there are two further configuration steps
     then click on `Install without restart`
     + Go to the `Updates` tab, select all items (sorry, the UI for this is terrible) then click on 
     `Download now and install after restart.`
-    + Click on the `Restart Jenkins...` gox when it appears.  
+    + Click on the `Restart Jenkins...` box when it appears.  
     
 Wait 5 minutes or so for Jenkins to restart so you can reconnect
 
@@ -84,13 +84,13 @@ Log back into Jenkins, and select `New Item`
 
 + Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
 + Select `This project is parameterized` and add the following parameters
-    + *TRACER_TYPE* Choice Parameter with values JAEGER, NOOP, or NONE
-    + *JMETER_CLIENT_COUNT* String default `50`  description to `The number of client threads JMeter should create1
-    + *ITERATIONS* String default `1000` description `The number of iterations each client should execute`
-    + *RAMPUP* String default `30` description 'The number of seconds to take to start all clients`
-    + *DELAY1* String default `5` description `delay after hitting /singleSpan`
-    + *DELAY2* String default `5` description `delay after hitting /spanWithChild`
-+ Scroll down to the **Pipeline** section and select `Pipeline script from SCM
+    + *TRACER_TYPE* _Choice Parameter_ with values JAEGER, NOOP, or NONE
+    + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
+    + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
+    + *RAMPUP* _String_ default `30` description 'The number of seconds to take to start all clients`
+    + *DELAY1* _String_ default `5` description `delay after hitting /singleSpan`
+    + *DELAY2* _String_ default `5` description `delay after hitting /spanWithChild`
++ Scroll down to the **Pipeline** section and select `Pipeline script from SCM`
 + Select `Git` as the SCM and enter `https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git` as 
 the repository URL
 
@@ -100,9 +100,9 @@ To run the test click the `Build with Parameters` link.  Change the default para
 
 So far I have been unable to get the HTML Publisher Plugin to work correctly in Jenkins on OpenShift.  
 In order to see the full results, after running a job on Jenkins, click on the 
-`Performance Report` link on the left side of page, and then click on the _Zip_ link on the top
-right corner of that page.  Unzip the Performance_Report.zip file that is downloaded, and then
-open Performance_Report/index.html in a browser to view the results.
+`Performance Report` link on the left side of page, and then click on the `Zip` link on the top
+right corner of that page.  Unzip the `Performance_Report.zip` file that is downloaded, and then
+open `Performance_Report/index.html` in a browser to view the results.
 
 ## Details of the JMeter Test
 
