@@ -35,8 +35,10 @@ pipeline {
             steps{
                 git 'https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git'
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
-                    if (env.TRACER_TYPE == 'NONE') {
-                        sh 'git checkout no-tracing'
+                    script {
+                        if (env.TRACER_TYPE == 'NONE') {
+                            sh 'git checkout no-tracing'
+                        }
                     }
                     sh 'mvn fabric8:deploy -Popenshift'
                 }
