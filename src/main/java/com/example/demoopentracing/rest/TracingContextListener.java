@@ -19,9 +19,6 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -34,7 +31,6 @@ public class TracingContextListener implements ServletContextListener {
     private static Integer JAEGER_MAX_QUEUE_SIZE = new Integer(envs.getOrDefault("JAEGER_MAX_QUEUE_SIZE", "50"));
     private static Double JAEGER_SAMPLING_RATE = new Double(envs.getOrDefault("JAEGER_SAMPLING_RATE", "1.0"));
     private static Integer JAEGER_UDP_PORT = new Integer(envs.getOrDefault("JAEGER_UDP_PORT", "5775"));
-    // FIXME hardcoded jaeger-agent-host is a hack
     private static String JAEGER_AGENT_HOST = envs.getOrDefault("JAEGER_AGENT_HOST", "localhost");
     private static final String TRACER_TYPE = envs.getOrDefault("TRACER_TYPE", "jaeger");
     private static final String TEST_SERVICE_NAME = envs.getOrDefault("TEST_SERVICE_NAME", "wildfly-swarm-opentracing-demo");
@@ -55,15 +51,6 @@ public class TracingContextListener implements ServletContextListener {
     @Singleton
     public static io.opentracing.Tracer jaegerTracer() {
         Tracer tracer;
-
-        logger.warning("****** HACK HACK HACK ********");
-        logger.warning("******* REMOVE THIS **********");
-        List<String> evNames = new ArrayList<>(envs.keySet());
-        Collections.sort(evNames);
-        for (String evName : evNames) {
-            String value = envs.get(evName);
-            logger.info(">>> " + evName + ": " + value);
-        }
 
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
             logger.info("Using JAEGER tracer using host [" + JAEGER_AGENT_HOST + "] port [" + JAEGER_UDP_PORT +
