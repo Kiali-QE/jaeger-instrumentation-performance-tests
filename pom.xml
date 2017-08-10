@@ -20,6 +20,7 @@
     <version.jaeger.core>0.20.5</version.jaeger.core>
     <version.opentracing.jaxrs>0.0.8</version.opentracing.jaxrs>
     <jaeger.agent.host>localhost</jaeger.agent.host>
+    <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
     <test.service.name>FRED</test.service.name>
   </properties>
 
@@ -175,7 +176,7 @@
                 <configuration>
                   <resources>
                     <env>
-                      <JAEGER_SAMPLING_RATE>0.5</JAEGER_SAMPLING_RATE>
+                      <JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}/JAEGER_SAMPLING_RATE>
                       <JAEGER_AGENT_HOST>${jaeger.agent.host}</JAEGER_AGENT_HOST>
                       <TEST_SERVICE_NAME>${test.service.name}</TEST_SERVICE_NAME>
                     </env>
