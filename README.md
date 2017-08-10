@@ -14,6 +14,7 @@ The wildfly-swarm application is very simple and has 2 endpoints, *singleSpan* a
 + **SLEEP_INTERVAL** The number of milliseconds each action should sleep.  This defaults to 10.
 + **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "wildfly-swarm-opentracing-demo"
 + **JAEGER_SAMPLING_RATE** Set between 0.0 and 1.0 to set the sampling rate
++ **JAEGER_AGENT_HOST** Host the jaeger agent is running on, defaults to _localhost_
 
 NOTE: As of this writing, if you follow the instructions for deploying on OpenShift, there is no way
 to set these values.  I am using the fabric8-maven-plugin to deploy the application to OpenShift, and
@@ -86,6 +87,8 @@ Log back into Jenkins, and select `New Item`
 + Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
 + Select `This project is parameterized` and add the following parameters
     + *TRACER_TYPE* _Choice Parameter_ with values JAEGER, NOOP, or NONE
+    + *JAEGER_AGENT_HOST* _String_ default `jaeger-.jaeger-performance.svc` description `Hostname for Jaeger Ageent` 
+    + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
     + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
     + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
     + *RAMPUP* _String_ default `30` description 'The number of seconds to take to start all clients`
