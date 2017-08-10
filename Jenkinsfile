@@ -5,8 +5,8 @@ pipeline {
         stage('Set name and desription') {
             steps {
                 script {
-                    currentBuild.displayName = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS
-                    currentBuild.description = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations"
+                    currentBuild.displayName = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS + " " + env.JAEGER_SAMPLING_RATE
+                    currentBuild.description = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations " + env.JAEGER_SAMPLING_RATE + " sampling"
                 }
             }
         }
