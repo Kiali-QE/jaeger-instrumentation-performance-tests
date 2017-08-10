@@ -35,7 +35,7 @@ public class TracingContextListener implements ServletContextListener {
     private static Double JAEGER_SAMPLING_RATE = new Double(envs.getOrDefault("JAEGER_SAMPLING_RATE", "1.0"));
     private static Integer JAEGER_UDP_PORT = new Integer(envs.getOrDefault("JAEGER_UDP_PORT", "5775"));
     // FIXME hardcoded jaeger-agent-host is a hack
-    private static String JAEGER_AGENT_HOST = envs.getOrDefault("JAEGER_AGENT_HOST", "jaeger-agent.jaeger-performance.svc");
+    private static String JAEGER_AGENT_HOST = envs.getOrDefault("JAEGER_AGENT_HOST", "localhost");
     private static final String TRACER_TYPE = envs.getOrDefault("TRACER_TYPE", "jaeger");
     private static final String TEST_SERVICE_NAME = envs.getOrDefault("TEST_SERVICE_NAME", "wildfly-swarm-opentracing-demo");
     private static Logger logger = Logger.getLogger(TracingContextListener.class.getName());

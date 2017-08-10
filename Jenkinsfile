@@ -41,7 +41,7 @@ pipeline {
                         }
                     }
                     sh 'git status'
-                    sh 'mvn fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Popenshift'
+                    sh 'mvn fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST}-Popenshift'
                 }
             }
         }
