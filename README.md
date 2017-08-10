@@ -10,9 +10,10 @@ these environments requires the following steps:
 
 The wildfly-swarm application is very simple and has 2 endpoints, *singleSpan* and *spanWithChild*  The following environment variables can be used to alter the default behavior:
                                              
-+ TRACER_TYPE The NoopTracer will be used if this is set to any value other than "jaeger"
-+ SLEEP_INTERVAL The number of milliseconds each action should sleep.  This defaults to 10.
-+ TEST_SERVICE_NAME Service name to use when reporting spans to jaeger.  Defaults to "wildfly-swarm-opentracing-demo"
++ **TRACER_TYPE** The NoopTracer will be used if this is set to any value other than "jaeger"
++ **SLEEP_INTERVAL** The number of milliseconds each action should sleep.  This defaults to 10.
++ **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "wildfly-swarm-opentracing-demo"
++ **JAEGER_SAMPLING_RATE** Set between 0.0 and 1.0 to set the sampling rate
 
 NOTE: As of this writing, if you follow the instructions for deploying on OpenShift, there is no way
 to set these values.  I am using the fabric8-maven-plugin to deploy the application to OpenShift, and
