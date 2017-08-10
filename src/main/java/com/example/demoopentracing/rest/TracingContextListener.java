@@ -67,7 +67,7 @@ public class TracingContextListener implements ServletContextListener {
 
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
             logger.info("Using JAEGER tracer using host [" + JAEGER_AGENT_HOST + "] port [" + JAEGER_UDP_PORT +
-                    " Service Name " + TEST_SERVICE_NAME);
+                    "] Service Name " + TEST_SERVICE_NAME + " Sampling rate " + JAEGER_SAMPLING_RATE);
 
             Sender sender = new UdpSender(JAEGER_AGENT_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
             Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
