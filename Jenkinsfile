@@ -69,17 +69,21 @@ pipeline {
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
             }
         }
-        stage('Delete Jaeger') {
+        stage('Delete Jaeger at end') {
             steps {
-                if (env.DELETE_JAEGER_AT_END == 'true') {
-                    sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
+                script {
+                    if (env.DELETE_JAEGER_AT_END == 'true') {
+                        sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
+                    }
                 }
             }
         }
-        stage('Delete wildfly-swarm example app') {
+        stage('Delete wildfly-swarm example app at end') {
             steps {
-                if (env.DELETE_WILDFLY_AT_END == 'true') {
-                    sh 'oc delete all,template,daemonset,configmap -l project=wildfly-swarm-opentracing'
+                script {
+                    if (env.DELETE_WILDFLY_AT_END == 'true') {
+                        sh 'oc delete all,template,daemonset,configmap -l project=wildfly-swarm-opentracing'
+                    }
                 }
             }
         }
