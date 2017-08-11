@@ -9,19 +9,18 @@
   <packaging>war</packaging>
 
   <properties>
-    <version.wildfly.swarm>2017.8.1</version.wildfly.swarm>
+    <fabric8.maven.plugin.version>3.5.22</fabric8.maven.plugin.version>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+    <jaeger.agent.host>localhost</jaeger.agent.host>
+    <jaeger.core.version>0.20.5</jaeger.core.version>
+    <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <fabric8.maven.plugin.version>3.5.22</fabric8.maven.plugin.version>
     <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
-    <version.jaeger.core>0.20.5</version.jaeger.core>
-    <version.opentracing.jaxrs>0.0.8</version.opentracing.jaxrs>
-    <jaeger.agent.host>localhost</jaeger.agent.host>
-    <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
+    <opentracing.jaxrs.version>0.0.8</opentracing.jaxrs.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>FRED</test.service.name>
+    <wildfly.swarm.version>2017.8.1</wildfly.swarm.version>
   </properties>
 
   <dependencyManagement>
@@ -29,7 +28,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>bom-all</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>${wildfly.swarm.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -42,13 +41,12 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>${wildfly.swarm.version}</version>
         <configuration>
           <properties>
             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
           </properties>
         </configuration>
-        
         <executions>
           <execution>
             <goals>
@@ -80,12 +78,12 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jaxrs2</artifactId>
-      <version>${version.opentracing.jaxrs}</version>
+      <version>${opentracing.jaxrs.version}</version>
     </dependency>
     <dependency>
       <groupId>com.uber.jaeger</groupId>
       <artifactId>jaeger-core</artifactId>
-      <version>${version.jaeger.core}</version>
+      <version>${jaeger.core.version}</version>
     </dependency>
   </dependencies>
 
