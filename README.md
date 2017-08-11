@@ -94,6 +94,8 @@ Log back into Jenkins, and select `New Item`
     + *RAMPUP* _String_ default `30` description 'The number of seconds to take to start all clients`
     + *DELAY1* _String_ default `5` description `delay after hitting /singleSpan`
     + *DELAY2* _String_ default `5` description `delay after hitting /spanWithChild`
+    + *DELETE_JAEGER_AT_END* _Boolean_ default `true` description `Delete Jaeger instance at end of the test`
+    + *DELETE_WILDFLY_AT_END* _Boolean_ default `true` description `Delete the wildfly-swarm application at end of the test`
 + Scroll down to the **Pipeline** section and select `Pipeline script from SCM`
 + Select `Git` as the SCM and enter `https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git` as 
 the repository URL

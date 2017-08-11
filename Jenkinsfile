@@ -69,5 +69,19 @@ pipeline {
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
             }
         }
+        stage('Delete Jaeger') {
+            steps {
+                if (env.DELETE_JAEGER_AT_END == 'true') {
+                    sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
+                }
+            }
+        }
+        stage('Delete wildfly-swarm example app') {
+            steps {
+                if (env.DELETE_WILDFLY_AT_END == 'true') {
+                    sh 'oc delete all,template,daemonset,configmap -l project=wildfly-swarm-opentracing'
+                }
+            }
+        }
     }
 }
