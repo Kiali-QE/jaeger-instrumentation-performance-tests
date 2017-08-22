@@ -87,7 +87,7 @@ Log back into Jenkins, and select `New Item`
 + Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
 + Select `This project is parameterized` and add the following parameters
     + *TRACER_TYPE* _Choice Parameter_ with values JAEGER, NOOP, or NONE
-    + *JAEGER_AGENT_HOST* _String_ default `jaeger-.jaeger-performance.svc` description `Hostname for Jaeger Ageent` 
+    + *JAEGER_AGENT_HOST* _String_ default `jaeger-agent.jaeger-performance.svc` description `Hostname for Jaeger Ageent`
     + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
     + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
     + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
