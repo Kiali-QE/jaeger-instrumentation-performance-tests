@@ -23,12 +23,12 @@ I have not yet found out how to set environment variables when using it.
 # Install JMeter
 Download the latest JMeter instance from http://jmeter.apache.org/download_jmeter.cgi and add it to your PATH
 
-# Running Standalone/On a desktop
+# Running Wildfly-Swarm example standalone
 
 + Start Jaeger.  The simplest way to do this is to run the Jaeger all-in-one Docker image
    + `docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest`
-+ Build this example using `mvn clean install` 
-+ Run the application with `mvn wildfly-swarm:run` or `java -jar target/demo-swarm.jar`
++ Build the example using `mvn -f wildfly-swarm/pom.xml clean install`
++ Run the application with `mvn -f wildfly-swarm/pom.xml wildfly-swarm:run` or `java -jar wildfly-swarm/target/wildfly-swarm-opentracing-swarm.jar`
 + Run the JMeter test  (Options are described below) 
     + `jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=100 -JITERATIONS=1000 -JRAMPUP=0 -JURL=localhost -JPORT=8080 --logfile log.txt --reportatendofloadtests --reportoutputfolder reports`
 + Open reports/index.html in a browser to view the results             
@@ -38,7 +38,7 @@ Download the latest JMeter instance from http://jmeter.apache.org/download_jmete
 If you'd prefer, you can run the wildfly-swarm example application in Docker.  To do so replace the build
 and run steps from the previous section with these steps
 
-+ Create a docker image: `mvn clean install -Pdocker`
++ Create a docker image: `mvn -f wildfly-swarm/pom.xml clean install -Pdocker`
 + Run the application: `docker run -p 8080:8080 -eJAEGER_AGENT_HOST=${jaeger-host-ip} wildfly-swarm-opentracing`
 
 Note that `jaeger-host-ip` should be the real ip of the machine where you're running Jaeger, not `localhost`
