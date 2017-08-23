@@ -37,5 +37,6 @@
 
   <modules>
     <module>wildfly-swarm</module>
+    <module>spring-boot</module>
   </modules>
 </project>
