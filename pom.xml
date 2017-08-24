@@ -17,7 +17,7 @@
     <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
     <opentracing.jaxrs.version>0.0.8</opentracing.jaxrs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <test.service.name>FRED</test.service.name>
+    <test.service.name>jaeger-performance-tests</test.service.name>
   </properties>
 
   <dependencyManagement>
