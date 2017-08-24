@@ -22,6 +22,8 @@ pipeline {
         stage('Delete example app') {
             steps {
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'pwd'
+                    sh 'ls -alF'
                     sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
                 }
             }
