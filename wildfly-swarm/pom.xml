@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>com.kevinearls</groupId>
-  <artifactId>wildfly-swarm-opentracing</artifactId>
+  <artifactId>jaeger-performance-wildfly-swarm-app</artifactId>
   <name>WildFly Swarm With Opentracing Example</name>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -43,7 +43,7 @@
   </dependencyManagement>
 
   <build>
-    <finalName>wildfly-swarm-opentracing</finalName>
+    <finalName>jaeger-performance-wildfly-swarm-app</finalName>
     <plugins>
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
