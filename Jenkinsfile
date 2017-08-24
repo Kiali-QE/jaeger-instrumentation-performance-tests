@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Delete example app') {
             steps {
-                sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:deploy'
+                sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
             }
         }
         stage('Cleanup workspace') {
@@ -90,7 +90,7 @@ pipeline {
             steps {
                 script {
                     if (env.DELETE_EXAMPLE_AT_END == 'true') {
-                        sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:deploy'
+                        sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
                     }
                 }
             }
