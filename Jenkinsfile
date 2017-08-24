@@ -1,12 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+        testTargetApp = 'jaeger-performance-' + "${TARGET_APP}" + '-app'
+        JMETER_URL = ${testTargetApp} + ".jaeger-performance.svc"
+    }
     stages {
         stage('Set name and description') {
             steps {
                 script {
-                    currentBuild.displayName = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS + " " + env.JAEGER_SAMPLING_RATE
-                    currentBuild.description = env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations " + env.JAEGER_SAMPLING_RATE + " sampling"
+                    currentBuild.displayName = env.TARGET_APP + " " + env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS + " " + env.JAEGER_SAMPLING_RATE
+                    currentBuild.description = env.TARGET_APP + " " + env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations " + env.JAEGER_SAMPLING_RATE + " sampling"
                 }
             }
         }
@@ -17,7 +21,7 @@ pipeline {
         }
         stage('Delete wildfly-swarm example app') {
             steps {
-                sh 'oc delete all,template,daemonset,configmap -l project=jaeger-performance-wildfly-swarm-app'
+                sh 'oc delete all,template,daemonset,configmap -l project=' + testTargetApp
             }
         }
         stage('Cleanup workspace') {
@@ -52,7 +56,7 @@ pipeline {
         }
         stage('verify wildfly swarm example deployment'){
             steps{
-                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-performance-wildfly-swarm-app', verbose: 'false'
+                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false'
             }
         }
         stage('Run JMeter Test') {
@@ -65,9 +69,8 @@ pipeline {
                         tar -xf apache-jmeter-3.2.tar
                         rm -rf log.txt reports
 
-                        export URL=jaeger-performance-wildfly-swarm-app.jaeger-performance.svc
                         export PORT=8080
-                        ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
+                        ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
 
                     '''
                 }
@@ -87,7 +90,7 @@ pipeline {
             steps {
                 script {
                     if (env.DELETE_WILDFLY_AT_END == 'true') {
-                        sh 'oc delete all,template,daemonset,configmap -l project=jaeger-performance-wildfly-swarm-app'
+                        sh 'oc delete all,template,daemonset,configmap -l project=' + env.testTargetApp
                     }
                 }
             }
