@@ -21,7 +21,9 @@ pipeline {
         }
         stage('Delete example app') {
             steps {
-                sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
+                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
+                }
             }
         }
         stage('Cleanup workspace') {
@@ -88,9 +90,11 @@ pipeline {
         }
         stage('Delete example app at end') {
             steps {
-                script {
-                    if (env.DELETE_EXAMPLE_AT_END == 'true') {
-                        sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
+                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    script {
+                        if (env.DELETE_EXAMPLE_AT_END == 'true') {
+                            sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:undeploy'
+                        }
                     }
                 }
             }
