@@ -28,6 +28,7 @@
 		<jaeger.sampling.rate>0.5</jaeger.sampling.rate>
 		<jaeger.test.service.name>jaeger-spring-boot-tests</jaeger.test.service.name>
 		<java.version>1.8</java.version>
+		<maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
 		<opentracing.spring.web.version>0.0.9</opentracing.spring.web.version>
 	</properties>
 
@@ -58,6 +59,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>jaeger-performance-tests</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -67,6 +69,72 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>${maven.docker.plugin.version}</version>
+						<configuration>
+							<images>
+								<image>
+									<name>${project.build.finalName}</name>
+									<run>
+										<ports>
+											<port>8080:8080</port>
+										</ports>
+									</run>
+									<build>
+										<from>java:openjdk-8-jdk</from>
+										<ports>
+											<port>8080</port>
+										</ports>
+										<assembly>
+											<basedir>/</basedir>
+											<inline>
+												<files>
+													<file>
+														<source>${project.build.directory}/${project.artifactId}.jar</source>
+														<outputDirectory>/opt</outputDirectory>
+													</file>
+												</files>
+											</inline>
+										</assembly>
+										<entryPoint>
+											<shell>java -jar /opt/${project.artifactId}.jar</shell>
+										</entryPoint>
+									</build>
+								</image>
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>pre-integration-test</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>post-integration-test</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>openshift</id>
 			<build>
@@ -89,7 +157,7 @@
 										<env>
 											<JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}</JAEGER_SAMPLING_RATE>
 											<JAEGER_AGENT_HOST>${jaeger.agent.host}</JAEGER_AGENT_HOST>
-											<TEST_SERVICE_NAME>${jaeger.test.service.name}</TEST_SERVICE_NAME>
+											<TEST_SERVICE_NAME>${test.service.name}</TEST_SERVICE_NAME>
 										</env>
 									</resources>
 								</configuration>
