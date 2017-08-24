@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         testTargetApp = 'jaeger-performance-' + "${TARGET_APP}" + '-app'
-        JMETER_URL = ${testTargetApp} + ".jaeger-performance.svc"
+        JMETER_URL = "${testTargetApp}" + ".jaeger-performance.svc"
     }
     stages {
         stage('Set name and description') {
