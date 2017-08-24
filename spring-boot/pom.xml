@@ -21,7 +21,14 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<fabric8.maven.plugin.version>3.5.25</fabric8.maven.plugin.version>
+		<jaeger.agent.host>localhost</jaeger.agent.host>
+		<jaeger.core.version>0.20.5</jaeger.core.version>
+		<jaeger.sampling.rate>0.5</jaeger.sampling.rate>
+		<jaeger.test.service.name>jaeger-spring-boot-tests</jaeger.test.service.name>
 		<java.version>1.8</java.version>
+		<opentracing.spring.web.version>0.0.9</opentracing.spring.web.version>
 	</properties>
 
 	<dependencies>
@@ -39,13 +46,13 @@
 		<dependency>
 			<groupId>io.opentracing.contrib</groupId>
 			<artifactId>opentracing-spring-web-autoconfigure</artifactId>
-			<version>0.0.9</version>
+			<version>${opentracing.spring.web.version}</version>
 		</dependency>
-
+		<!-- Jaeger version -->
 		<dependency>
 			<groupId>com.uber.jaeger</groupId>
 			<artifactId>jaeger-core</artifactId>
-			<version>0.20.5</version>
+			<version>${jaeger.core.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -58,6 +65,41 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>fabric8-maven-plugin</artifactId>
+						<version>${fabric8.maven.plugin.version}</version>
+
+						<executions>
+							<execution>
+								<id>fmp</id>
+								<goals>
+									<goal>resource</goal>
+									<goal>helm</goal>
+									<goal>build</goal>
+								</goals>
+								<configuration>
+									<resources>
+										<env>
+											<JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}</JAEGER_SAMPLING_RATE>
+											<JAEGER_AGENT_HOST>${jaeger.agent.host}</JAEGER_AGENT_HOST>
+											<TEST_SERVICE_NAME>${jaeger.test.service.name}</TEST_SERVICE_NAME>
+										</env>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 
 </project>
