@@ -19,9 +19,9 @@ pipeline {
                 sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
             }
         }
-        stage('Delete wildfly-swarm example app') {
+        stage('Delete example app') {
             steps {
-                sh 'oc delete all,template,daemonset,configmap -l project=' + testTargetApp
+                sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:deploy'
             }
         }
         stage('Cleanup workspace') {
@@ -39,7 +39,7 @@ pipeline {
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
             }
         }
-        stage('Deploy wildfly-swarm example'){
+        stage('Deploy example application'){
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     script {
@@ -50,11 +50,11 @@ pipeline {
                         }
                     }
                     sh 'git status'
-                    sh 'mvn -f wildfly-swarm/pom.xml fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST} -Popenshift'
+                    sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST} -Popenshift'
                 }
             }
         }
-        stage('verify wildfly swarm example deployment'){
+        stage('verify example deployment'){
             steps{
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false'
             }
@@ -86,11 +86,11 @@ pipeline {
                 }
             }
         }
-        stage('Delete wildfly-swarm example app at end') {
+        stage('Delete example app at end') {
             steps {
                 script {
-                    if (env.DELETE_WILDFLY_AT_END == 'true') {
-                        sh 'oc delete all,template,daemonset,configmap -l project=' + env.testTargetApp
+                    if (env.DELETE_EXAMPLE_AT_END == 'true') {
+                        sh 'mvn -f ${TARGET_APP}/pom.xml fabric8:deploy'
                     }
                 }
             }
