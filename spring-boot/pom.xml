@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.kevinearls</groupId>
-	<artifactId>jaeger-performance-tests</artifactId>
+	<artifactId>jaeger-performance-spring-boot-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>jaeger-performance-tests</name>
+	<name>jaeger-performance-spring-boot-app</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -26,7 +26,7 @@
 		<jaeger.agent.host>localhost</jaeger.agent.host>
 		<jaeger.core.version>0.20.5</jaeger.core.version>
 		<jaeger.sampling.rate>0.5</jaeger.sampling.rate>
-		<jaeger.test.service.name>jaeger-spring-boot-tests</jaeger.test.service.name>
+		<test.service.name>jaeger-spring-boot-tests</test.service.name>
 		<java.version>1.8</java.version>
 		<maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
 		<opentracing.spring.web.version>0.0.9</opentracing.spring.web.version>
@@ -59,7 +59,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>jaeger-performance-tests</finalName>
+		<finalName>jaeger-performance-spring-boot-app</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
