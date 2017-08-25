@@ -87,6 +87,7 @@ Log back into Jenkins, and select `New Item`
 + Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
 + Select `This project is parameterized` and add the following parameters
     + *TRACER_TYPE* _Choice Parameter_ with values JAEGER, NOOP, or NONE
+    + *TARGET_APP* _Choice Parameter_ with values wildfly-swarm, spring-boot
     + *JAEGER_AGENT_HOST* _String_ default `jaeger-agent.jaeger-performance.svc` description `Hostname for Jaeger Ageent`
     + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
     + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
@@ -95,7 +96,7 @@ Log back into Jenkins, and select `New Item`
     + *DELAY1* _String_ default `5` description `delay after hitting /singleSpan`
     + *DELAY2* _String_ default `5` description `delay after hitting /spanWithChild`
     + *DELETE_JAEGER_AT_END* _Boolean_ default `true` description `Delete Jaeger instance at end of the test`
-    + *DELETE_WILDFLY_AT_END* _Boolean_ default `true` description `Delete the wildfly-swarm application at end of the test`
+    + *DELETE_EXAMPLE_AT_END* _Boolean_ default `true` description `Delete the target application at end of the test`
 + Scroll down to the **Pipeline** section and select `Pipeline script from SCM`
 + Select `Git` as the SCM and enter `https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git` as 
 the repository URL
