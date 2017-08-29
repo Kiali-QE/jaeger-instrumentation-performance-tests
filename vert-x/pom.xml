@@ -15,7 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<fabric8.maven.plugin.version>3.5.25</fabric8.maven.plugin.version>    <!-- FIXME -->
+		<fabric8.maven.plugin.version>3.5.19</fabric8.maven.plugin.version>    <!-- FIXME -->
 		<jaeger.agent.host>localhost</jaeger.agent.host>
 		<jaeger.core.version>0.20.5</jaeger.core.version>
 		<jaeger.sampling.rate>0.5</jaeger.sampling.rate>

@@ -16,7 +16,7 @@
   <packaging>war</packaging>
 
   <properties>
-    <fabric8.maven.plugin.version>3.5.25</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.19</fabric8.maven.plugin.version>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.core.version>0.20.5</jaeger.core.version>
