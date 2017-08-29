@@ -29,7 +29,6 @@ pipeline {
         stage('Cleanup workspace') {
             steps {
                 sh 'ls -alF'
-                // FIXME https://github.com/kevinearls/jaeger-performance-tests/issues/19
             }
         }
         stage('deploy Jaeger all-in-one') {
