@@ -38,5 +38,6 @@
   <modules>
     <module>wildfly-swarm</module>
     <module>spring-boot</module>
+    <module>vert-x</module>
   </modules>
 </project>
