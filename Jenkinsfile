@@ -65,7 +65,6 @@ pipeline {
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     sh '''
-                        // FIXME https://github.com/kevinearls/jaeger-performance-tests/issues/2
                         rm -rf apache-jmeter*
                         curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
                         gunzip apache-jmeter-3.2.tgz
