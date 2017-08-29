@@ -19,13 +19,13 @@ pipeline {
                 sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
             }
         }
-        stage('Delete example app') {
+        /*stage('Delete example app') {
             steps {
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     sh 'mvn -f ${TARGET_APP}/pom.xml -Popenshift fabric8:undeploy'
                 }
             }
-        }
+        }*/
         stage('Cleanup workspace') {
             steps {
                 sh 'ls -alF'
