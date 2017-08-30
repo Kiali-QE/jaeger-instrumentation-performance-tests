@@ -22,9 +22,8 @@ public class JaegerPerformanceTestsVerticle extends AbstractVerticle {
     @Override
     public void start() {
         Tracer tracer = jaegerTracer();
-
         TracingHandler tracingHandler = new TracingHandler(tracer);
-        backendService = new BackendService(tracer);
+        backendService = new BackendService(tracer, tracingHandler);
 
         Router router = Router.router(vertx);
         router.get("/").handler(this::singleSpan);
@@ -51,7 +50,7 @@ public class JaegerPerformanceTestsVerticle extends AbstractVerticle {
     private void spanWithChild(RoutingContext routingContext) {
         try {
             Thread.sleep(SLEEP_INTERVAL);
-            backendService.action();
+            backendService.action(routingContext);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
