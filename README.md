@@ -30,7 +30,7 @@ Apache JMeter is used for testing.  Download the latest instance from http://jme
    + `docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest`
 + Build the example using `mvn -f <framework-dir>/pom.xml clean install`
 + Run the application using its maven plugin or fat jar:
-    + `mvn -f wildfly-swarm/pom.xml wildfly-swarm:run` or `java -jar wildfly-swarm/target/jaeger-performance-wildfly-swarm-app-swarm.jar `
+    + `mvn -f wildfly-swarm/pom.xml wildfly-swarm:run` OR `java -jar wildfly-swarm/target/jaeger-performance-wildfly-swarm-app-swarm.jar `
     + `mvn -f spring-boot/pom.xml spring-boot:run` OR `java -jar spring-boot/target/jaeger-performance-spring-boot-app.jar`
     + `mvn -f vertx/pom.xml vertx:run` OR `java -jar vertx/target/jaeger-performance-vertx-app.jar `
 
