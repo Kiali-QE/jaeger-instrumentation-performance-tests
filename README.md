@@ -1,45 +1,50 @@
-# Wildfly Swarm with OpenTracing demo
+# Jaeger/Opentracing Instrumentation Performance Test
 
-This is a simple example based on http://www.hawkular.org/blog/2017/07/opentracing-jaxrs.html which can be used to do 
+The purpose of this project is to determine the performance costs of instrumenting a Wildfly Swarm, Spring Boot, or Vert-X
+application using OpenTracing/Jaeger
+
+The project includes simple example for each of these frameworks which is based on 
+http://www.hawkular.org/blog/2017/07/opentracing-jaxrs.html which can be used to do 
 basic performance testing.  Tests can be run on a desktop, using Docker, or on OpenShift.  Running in any of 
 these environments requires the following steps:
 
 + Start a Jaeger instance
-+ Build and run this wildfly-swarm application
++ Build and run the desired application
 + Run the JMeter test found in TestPlans/SimpleTracingTest
 
-The wildfly-swarm application is very simple and has 2 endpoints, *singleSpan* and *spanWithChild*  The following environment variables can be used to alter the default behavior:
+The test applications are very simple and each has the same 2 endpoints, *singleSpan* and *spanWithChild*  The following 
+environment variables can be used to alter the default behavior:
                                              
 + **TRACER_TYPE** The NoopTracer will be used if this is set to any value other than "jaeger"
 + **SLEEP_INTERVAL** The number of milliseconds each action should sleep.  This defaults to 10.
-+ **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "wildfly-swarm-opentracing-demo"
++ **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "<framework-name>-opentracing-demo", e.g. "vertx-opentracing-demo"
 + **JAEGER_SAMPLING_RATE** Set between 0.0 and 1.0 to set the sampling rate
 + **JAEGER_AGENT_HOST** Host the jaeger agent is running on, defaults to _localhost_
 
-NOTE: As of this writing, if you follow the instructions for deploying on OpenShift, there is no way
-to set these values.  I am using the fabric8-maven-plugin to deploy the application to OpenShift, and
-I have not yet found out how to set environment variables when using it.
-
 # Install JMeter
-Download the latest JMeter instance from http://jmeter.apache.org/download_jmeter.cgi and add it to your PATH
+Apache JMeter is used for testing.  Download the latest instance from http://jmeter.apache.org/download_jmeter.cgi and add it to your PATH
 
-# Running Wildfly-Swarm example standalone
+# Running the tests standalone
 
 + Start Jaeger.  The simplest way to do this is to run the Jaeger all-in-one Docker image
    + `docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest`
-+ Build the example using `mvn -f wildfly-swarm/pom.xml clean install`
-+ Run the application with `mvn -f wildfly-swarm/pom.xml wildfly-swarm:run` or `java -jar wildfly-swarm/target/wildfly-swarm-opentracing-swarm.jar`
++ Build the example using `mvn -f <platform-dir>/pom.xml clean install`
++ Run the application using its maven plugin or fat jar:
+    + `mvn -f wildfly-swarm/pom.xml wildfly-swarm:run` or `java -jar wildfly-swarm/target/jaeger-performance-wildfly-swarm-app-swarm.jar `
+    + `mvn -f spring-boot/pom.xml spring-boot:run` OR `java -jar spring-boot/target/jaeger-performance-spring-boot-app.jar`
+    + `mvn -f vertx/pom.xml vertx:run` OR `java -jar vertx/target/jaeger-performance-vertx-app.jar `
+
 + Run the JMeter test  (Options are described below) 
     + `jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=100 -JITERATIONS=1000 -JRAMPUP=0 -JURL=localhost -JPORT=8080 --logfile log.txt --reportatendofloadtests --reportoutputfolder reports`
 + Open reports/index.html in a browser to view the results             
 
-## Running the wildfly-swarm application in Docker
+## Running the test application in Docker
 
-If you'd prefer, you can run the wildfly-swarm example application in Docker.  To do so replace the build
+If you'd prefer, you can run any of the example applications in Docker.  To do so replace the build
 and run steps from the previous section with these steps
 
-+ Create a docker image: `mvn -f wildfly-swarm/pom.xml clean install -Pdocker`
-+ Run the application: `docker run -p 8080:8080 -eJAEGER_AGENT_HOST=${jaeger-host-ip} wildfly-swarm-opentracing`
++ Create a docker image: `mvn -f <platform>/pom.xml clean install -Pdocker`
++ Run the application: `docker run -p 8080:8080 -eJAEGER_AGENT_HOST=${jaeger-host-ip} jaeger-performance-<platform>-app`
 
 Note that `jaeger-host-ip` should be the real ip of the machine where you're running Jaeger, not `localhost`
 
@@ -86,8 +91,8 @@ Log back into Jenkins, and select `New Item`
 
 + Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
 + Select `This project is parameterized` and add the following parameters
-    + *TRACER_TYPE* _Choice Parameter_ with values JAEGER, NOOP, or NONE
-    + *TARGET_APP* _Choice Parameter_ with values wildfly-swarm, spring-boot
+    + *TRACER_TYPE* _Choice Parameter_ with values **JAEGER**, **NOOP**, or **NONE**
+    + *TARGET_APP* _Choice Parameter_ with values **wildfly-swarm**, **spring-boot**, and **vertx**
     + *JAEGER_AGENT_HOST* _String_ default `jaeger-agent.jaeger-performance.svc` description `Hostname for Jaeger Ageent`
     + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
     + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
