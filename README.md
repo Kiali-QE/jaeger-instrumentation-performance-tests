@@ -1,10 +1,10 @@
-# Jaeger/Opentracing Instrumentation Performance Test
+# Jaeger/OpenTracing Instrumentation Performance Test
 
-The purpose of this project is to determine the performance costs of instrumenting a Wildfly Swarm, Spring Boot, or Vert-X
-application using OpenTracing/Jaeger
+The purpose of this project is to provide tests and test applications which can be used to determine the performance 
+costs of instrumenting a Wildfly Swarm, Spring Boot, or Vert-X application using OpenTracing/Jaeger
 
 The project includes simple example for each of these frameworks which is based on 
-http://www.hawkular.org/blog/2017/07/opentracing-jaxrs.html which can be used to do 
+http://www.hawkular.org/blog/2017/07/opentracing-jaxrs.html and can be used to do 
 basic performance testing.  Tests can be run on a desktop, using Docker, or on OpenShift.  Running in any of 
 these environments requires the following steps:
 
@@ -17,7 +17,7 @@ environment variables can be used to alter the default behavior:
                                              
 + **TRACER_TYPE** The NoopTracer will be used if this is set to any value other than "jaeger"
 + **SLEEP_INTERVAL** The number of milliseconds each action should sleep.  This defaults to 10.
-+ **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "<framework-name>-opentracing-demo", e.g. "vertx-opentracing-demo"
++ **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "framework-name-opentracing-demo", e.g. "vertx-opentracing-demo"
 + **JAEGER_SAMPLING_RATE** Set between 0.0 and 1.0 to set the sampling rate
 + **JAEGER_AGENT_HOST** Host the jaeger agent is running on, defaults to _localhost_
 
@@ -28,7 +28,7 @@ Apache JMeter is used for testing.  Download the latest instance from http://jme
 
 + Start Jaeger.  The simplest way to do this is to run the Jaeger all-in-one Docker image
    + `docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest`
-+ Build the example using `mvn -f <platform-dir>/pom.xml clean install`
++ Build the example using `mvn -f <framework-dir>/pom.xml clean install`
 + Run the application using its maven plugin or fat jar:
     + `mvn -f wildfly-swarm/pom.xml wildfly-swarm:run` or `java -jar wildfly-swarm/target/jaeger-performance-wildfly-swarm-app-swarm.jar `
     + `mvn -f spring-boot/pom.xml spring-boot:run` OR `java -jar spring-boot/target/jaeger-performance-spring-boot-app.jar`
@@ -43,8 +43,8 @@ Apache JMeter is used for testing.  Download the latest instance from http://jme
 If you'd prefer, you can run any of the example applications in Docker.  To do so replace the build
 and run steps from the previous section with these steps
 
-+ Create a docker image: `mvn -f <platform>/pom.xml clean install -Pdocker`
-+ Run the application: `docker run -p 8080:8080 -eJAEGER_AGENT_HOST=${jaeger-host-ip} jaeger-performance-<platform>-app`
++ Create a docker image: `mvn -f <framework>/pom.xml clean install -Pdocker`
++ Run the application: `docker run -p 8080:8080 -eJAEGER_AGENT_HOST=${jaeger-host-ip} jaeger-performance-<framework>-app`
 
 Note that `jaeger-host-ip` should be the real ip of the machine where you're running Jaeger, not `localhost`
 
