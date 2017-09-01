@@ -40,7 +40,7 @@ public class JaegerPerformanceTestsApplication {
 	}
 
 	@Bean
-	public io.opentracing.Tracer jaegerTracer() {
+	public io.opentracing.Tracer tracer() {
         io.opentracing.Tracer tracer;
 
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
