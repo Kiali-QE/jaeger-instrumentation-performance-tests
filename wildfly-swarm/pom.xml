@@ -16,14 +16,7 @@
   <packaging>war</packaging>
 
   <properties>
-    <fabric8.maven.plugin.version>3.5.19</fabric8.maven.plugin.version>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <jaeger.agent.host>localhost</jaeger.agent.host>
-    <jaeger.core.version>0.20.5</jaeger.core.version>
-    <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
     <opentracing.jaxrs.version>0.0.8</opentracing.jaxrs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>wildfly-swarm-demo</test.service.name>
@@ -90,7 +83,6 @@
     <dependency>
       <groupId>com.uber.jaeger</groupId>
       <artifactId>jaeger-core</artifactId>
-      <version>${jaeger.core.version}</version>
     </dependency>
   </dependencies>
 
