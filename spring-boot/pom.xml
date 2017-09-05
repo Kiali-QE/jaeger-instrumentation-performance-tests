@@ -45,6 +45,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -69,6 +73,13 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.starter.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -140,6 +151,7 @@
 				</plugins>
 			</build>
 		</profile>
+
 		<profile>
 			<id>openshift</id>
 			<build>
@@ -158,6 +170,11 @@
 									<goal>build</goal>
 								</goals>
 								<configuration>
+									<enricher>
+										<excludes>
+											<exclude>spring-boot-health-check</exclude>
+										</excludes>
+									</enricher>
 									<resources>
 										<env>
 											<JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}</JAEGER_SAMPLING_RATE>
@@ -167,6 +184,7 @@
 									</resources>
 								</configuration>
 							</execution>
+
 						</executions>
 					</plugin>
 				</plugins>
