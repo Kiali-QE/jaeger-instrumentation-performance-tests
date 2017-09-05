@@ -47,7 +47,8 @@ pipeline {
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     script {
                         if (env.TRACER_TYPE == 'JAEGER') {
-                            git 'https://github.com/kevinearls/jaeger-performance-tests.git'
+                            /*git 'https://github.com/kevinearls/jaeger-performance-tests.git'   FIXME restore this */
+                              git branch: 'add-jaeger-agent', url: 'https://github.com/kevinearls/jaeger-performance-tests.git'
                         } else {
                             git branch: 'no-tracing', url: 'https://github.com/kevinearls/jaeger-performance-tests.git'
                         }
