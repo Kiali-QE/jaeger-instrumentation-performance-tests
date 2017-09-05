@@ -31,7 +31,7 @@ pipeline {
                 sh 'ls -alF'
             }
         }
-        stage('deploy Jaeger all-in-one') {
+        stage('deploy Jaeger Production Template') {
             steps {
                 sh 'oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
             }
