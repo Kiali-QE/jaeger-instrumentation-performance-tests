@@ -171,6 +171,11 @@
                   <goal>build</goal>
                 </goals>
                 <configuration>
+                  <enricher>
+                    <excludes>
+                      <exclude>wildfly-swarm-health-check</exclude>
+                    </excludes>
+                  </enricher>
                   <resources>
                     <env>
                       <JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}</JAEGER_SAMPLING_RATE>

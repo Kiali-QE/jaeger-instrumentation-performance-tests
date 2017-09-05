@@ -33,12 +33,13 @@ pipeline {
         }
         stage('deploy Jaeger all-in-one') {
             steps {
-                sh 'oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/all-in-one/jaeger-all-in-one-template.yml | oc create -f -'
+                sh 'oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
             }
         }
         stage('verify Jaeger deployment'){
             steps{
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
+                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
             }
         }
         stage('Deploy example application'){
