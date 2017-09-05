@@ -57,6 +57,8 @@
                 <configuration>
                   <enricher>
                     <excludes>
+                      <exclude>spring-boot-health-check</exclude>
+                      <exclude>vertx-health-check</exclude>
                       <exclude>wildfly-swarm-health-check</exclude>
                     </excludes>
                   </enricher>

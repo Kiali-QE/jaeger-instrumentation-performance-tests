@@ -153,42 +153,5 @@
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>openshift</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.fabric8</groupId>
-            <artifactId>fabric8-maven-plugin</artifactId>
-            <version>${fabric8.maven.plugin.version}</version>
-
-            <executions>
-              <execution>
-                <id>fmp</id>
-                <goals>
-                  <goal>resource</goal>
-                  <goal>helm</goal>
-                  <goal>build</goal>
-                </goals>
-                <configuration>
-                  <enricher>
-                    <excludes>
-                      <exclude>wildfly-swarm-health-check</exclude>
-                    </excludes>
-                  </enricher>
-                  <resources>
-                    <env>
-                      <JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}</JAEGER_SAMPLING_RATE>
-                      <JAEGER_AGENT_HOST>${jaeger.agent.host}</JAEGER_AGENT_HOST>
-                      <TEST_SERVICE_NAME>${test.service.name}</TEST_SERVICE_NAME>
-                    </env>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 </project>
