@@ -79,7 +79,7 @@
           <hashTree/>
         </hashTree>
         <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Delay1" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(DELAY1,5)}</stringProp>
+          <stringProp name="ConstantTimer.delay">${__P(DELAY1,1)}</stringProp>
         </ConstantTimer>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="spanWithChild Request" enabled="true">
@@ -121,7 +121,7 @@
           <hashTree/>
         </hashTree>
         <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Delay2" enabled="true">
-          <stringProp name="ConstantTimer.delay">${__P(DELAY2,5)}</stringProp>
+          <stringProp name="ConstantTimer.delay">${__P(DELAY2,1)}</stringProp>
         </ConstantTimer>
         <hashTree/>
       </hashTree>

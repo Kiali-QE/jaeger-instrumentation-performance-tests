@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class BackendService {
     private static final Integer SLEEP_INTERVAL =
-            Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "10"));
+            Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
     public static Logger logger = Logger.getLogger(BackendService.class.getName());
 
     @Inject

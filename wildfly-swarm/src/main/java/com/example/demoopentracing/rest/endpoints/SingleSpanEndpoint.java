@@ -12,7 +12,7 @@ import java.util.Date;
 @Path("/singleSpan")
 public class SingleSpanEndpoint {
     private static final Integer SLEEP_INTERVAL =
-            Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "10"));
+            Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
 
     @GET
     @Produces("text/plain")

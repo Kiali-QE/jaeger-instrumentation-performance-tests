@@ -14,7 +14,7 @@ import java.util.Date;
 @Path("/spanWithChild")
 public class SpanWithChildEndpoint {
 	private static final Integer SLEEP_INTERVAL =
-			Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "10"));
+			Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
 
 	@Inject
 	private BackendService backendService;

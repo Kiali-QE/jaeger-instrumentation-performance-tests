@@ -9,7 +9,7 @@ import java.util.Date;
 
 @RestController
 public class SingleSpanController {
-    private static final Integer SLEEP_INTERVAL = Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "10"));
+    private static final Integer SLEEP_INTERVAL = Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
 
     @Autowired
     private RestTemplate restTemplate;

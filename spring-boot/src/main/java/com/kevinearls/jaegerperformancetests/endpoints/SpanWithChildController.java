@@ -10,7 +10,7 @@ import java.util.Date;
 
 @RestController
 public class SpanWithChildController {
-    private static final Integer SLEEP_INTERVAL = Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "10"));
+    private static final Integer SLEEP_INTERVAL = Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
 
     @Autowired
     private BackendService backendService;
