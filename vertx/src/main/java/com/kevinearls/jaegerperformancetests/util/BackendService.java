@@ -9,7 +9,6 @@ import io.vertx.ext.web.RoutingContext;
 import java.util.logging.Logger;
 
 public class BackendService {
-    private static final Integer SLEEP_INTERVAL = Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
     public static Logger logger = Logger.getLogger(BackendService.class.getName());
     private TracingHandler tracingHandler;
     private Tracer tracer;
@@ -23,7 +22,6 @@ public class BackendService {
         SpanContext spanContext = tracingHandler.serverSpanContext(routingContext);
         try (ActiveSpan span = tracer.buildSpan("action").asChildOf(spanContext).startActive()) {
             anotherAction();
-            Thread.sleep(SLEEP_INTERVAL);
         }
     }
 

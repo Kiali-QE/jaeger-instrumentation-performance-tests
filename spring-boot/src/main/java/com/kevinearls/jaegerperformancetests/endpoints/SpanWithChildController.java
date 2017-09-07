@@ -10,8 +10,6 @@ import java.util.Date;
 
 @RestController
 public class SpanWithChildController {
-    private static final Integer SLEEP_INTERVAL = Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
-
     @Autowired
     private BackendService backendService;
 
@@ -20,7 +18,6 @@ public class SpanWithChildController {
 
     @RequestMapping("/spanWithChild")
     public String spanWithChild() throws InterruptedException {
-        Thread.sleep(SLEEP_INTERVAL);
         backendService.action();
         return "Hello from /spanWithChild " + new Date();
     }

@@ -13,8 +13,6 @@ import java.util.Date;
 @ApplicationScoped
 @Path("/spanWithChild")
 public class SpanWithChildEndpoint {
-	private static final Integer SLEEP_INTERVAL =
-			Integer.parseInt(System.getenv().getOrDefault("SLEEP_INTERVAL", "1"));
 
 	@Inject
 	private BackendService backendService;
@@ -22,7 +20,6 @@ public class SpanWithChildEndpoint {
 	@GET
 	@Produces("text/plain")
 	public Response doGet() throws InterruptedException {
-		Thread.sleep(SLEEP_INTERVAL);
 		backendService.action();
 		return Response.ok("Hello from /spanWithChild " + new Date()).build();
 	}

@@ -16,7 +16,6 @@ The test applications are very simple and each has the same 2 endpoints, *single
 environment variables can be used to alter the default behavior:
                                              
 + **TRACER_TYPE** The NoopTracer will be used if this is set to any value other than "jaeger"
-+ **SLEEP_INTERVAL** The number of milliseconds each action should sleep.  This defaults to 10.
 + **TEST_SERVICE_NAME** Service name to use when reporting spans to jaeger.  Defaults to "framework-name-opentracing-demo", e.g. "vertx-opentracing-demo"
 + **JAEGER_SAMPLING_RATE** Set between 0.0 and 1.0 to set the sampling rate
 + **JAEGER_AGENT_HOST** Host the jaeger agent is running on, defaults to _localhost_
