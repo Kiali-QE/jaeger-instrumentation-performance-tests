@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <fabric8.maven.plugin.version>3.5.19</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.30</fabric8.maven.plugin.version>
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.core.version>0.20.5</jaeger.core.version>
     <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
