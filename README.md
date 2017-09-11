@@ -51,14 +51,14 @@ Note that `jaeger-host-ip` should be the real ip of the machine where you're run
 
 This section describes how to set up a Jenkins job and run the tests on an OpenShift instance.  At the
 current time, there are hard-coded dependencies on the project name, so the first thing you'll need to
-do is create a project named `jaeger-performance`
+do is create a project named `jaeger-infra`
 
-+ `oc new-project jaeger-performance`
++ `oc new-project jaeger-infra`
 
 ### Jenkins Creation
 
 Next create and configure a Jenkins instance on OpenShift.  Log onto OpenShift in a browser, 
-select the `jaeger-performance` project, and do the following:
+select the `jaeger-infra` project, and do the following:
 
 + Click on `Add to Project`
 + Select 'Continuous Integration and Deployment'
@@ -92,7 +92,7 @@ Log back into Jenkins, and select `New Item`
 + Select `This project is parameterized` and add the following parameters
     + *TRACER_TYPE* _Choice Parameter_ with values **JAEGER**, **NOOP**, or **NONE**
     + *TARGET_APP* _Choice Parameter_ with values **wildfly-swarm**, **spring-boot**, and **vertx**
-    + *JAEGER_AGENT_HOST* _String_ default `jaeger-agent.jaeger-performance.svc` description `Hostname for Jaeger Ageent`
+    + *JAEGER_AGENT_HOST* _String_ default `localhost` description `Hostname for Jaeger Ageent`
     + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
     + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
     + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
