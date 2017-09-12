@@ -28,6 +28,7 @@ pipeline {
                                 goBuild(example, 'JAEGER', rate, clientCount, iterations)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
+                                error.printStackTrace()
                             }
                         }
                     }
