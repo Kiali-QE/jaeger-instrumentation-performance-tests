@@ -12,7 +12,7 @@ pipeline {
                     /* First do all examples with no-tracing to get a baseline */
                     for (String example : examples) {
                         echo "Running with ${example} with notracing"
-                        /*goBuild(example, 'NONE', '0.1', clientCount, iterations)*/
+                        goBuild(example, 'NONE', '0.1', clientCount, iterations)
                     }
 
                     /* Now do each of the examples with each of the rates listed */
