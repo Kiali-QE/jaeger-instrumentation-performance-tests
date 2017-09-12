@@ -116,6 +116,16 @@ In order to see the full results, after running a job on Jenkins, click on the
 right corner of that page.  Unzip the `Performance_Report.zip` file that is downloaded, and then
 open `Performance_Report/index.html` in a browser to view the results.
 
+### Kicking off a set of Jenkins Jobs
+The file `Jenkinsfile.multi` can be used to set off multiple runs of the main Jenkins job.  It requires three parameters:
++ *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
++ *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
++ *RATES* _String_ default `0.05, 0.01, 0.02` description `Comma separated lists of sampling rates`
+
+This job will kick off the primary job ("Jaeger Performance") once for each example application with no tracer in
+order to set a benchmark, and then once for each example application for each rate using JAEGER.
+
+
 ## Details of the JMeter Test
 
 To run the performance test, use the following command: 

@@ -5,22 +5,20 @@ pipeline {
         stage ('Kick off jobs') {
             steps {
                 script {
-                    def clientCount = '200'
-                    def iterations = '10000'
                     def examples = ['wildfly-swarm', 'spring-boot', 'vertx']
                     
                     /* First do all examples with no-tracing to get a baseline */
                     for (String example : examples) {
                         try {
                             echo "Running with ${example} with notracing"
-                            goBuild(example, 'NONE', '0.1', clientCount, iterations)
+                            goBuild(example, 'NONE', '0.1', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                         } catch (error) {
                             echo "!!!! Error !!!!"
                         }
                     }
 
                     /* Now do each of the examples with each of the rates listed */
-                    def rates = ['0.05', '0.1', '0.2']
+                    def rates = env.RATES.split(',')
                     for (String rate : rates) {
                         for (String example : examples) {
                             try {
