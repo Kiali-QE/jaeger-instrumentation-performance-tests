@@ -4,6 +4,7 @@ pipeline {
     environment {
         testTargetApp = 'jaeger-performance-' + "${TARGET_APP}" + '-app'
         JMETER_URL = "${testTargetApp}" + ".jaeger-infra.svc"
+         PATH="${tool 'jdk8'}/bin:$PATH"
     }
     stages {
         stage('Set name and description') {
@@ -69,19 +70,16 @@ pipeline {
                 }
         stage('Run JMeter Test') {
             steps{
-                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
-                    sh '''
-                        rm -rf apache-jmeter*
-                        curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
-                        gunzip apache-jmeter-3.2.tgz
-                        tar -xf apache-jmeter-3.2.tar
-                        rm -rf log.txt reports
+                sh '''
+                    rm -rf apache-jmeter*
+                    curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
+                    gunzip apache-jmeter-3.2.tgz
+                    tar -xf apache-jmeter-3.2.tar
+                    rm -rf log.txt reports
 
-                        export PORT=8080
-                        ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
-
+                    export PORT=8080
+                    ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
                     '''
-                }
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
             }
         }
