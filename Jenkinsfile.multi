@@ -11,7 +11,7 @@ pipeline {
                     for (String example : examples) {
                         try {
                             echo "Running with ${example} with notracing"
-                            goBuild(example, 'NONE', '0.1', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                            //goBuild(example, 'NONE', '0.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                         } catch (error) {
                             echo "!!!! Error !!!!"
                         }
@@ -23,7 +23,7 @@ pipeline {
                         for (String example : examples) {
                             try {
                                 echo "Example ${example} with JAEGER using rate ${rate}"
-                                goBuild(example, 'JAEGER', rate, clientCount, iterations)
+                                goBuild(example, 'JAEGER', rate, env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
                                 echo error
