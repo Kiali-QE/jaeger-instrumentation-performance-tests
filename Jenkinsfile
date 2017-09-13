@@ -63,11 +63,11 @@ pipeline {
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false'
             }
         }
-        stage ('scale example deployment') {
+        /*stage ('scale example deployment') {  FIXME https://github.com/kevinearls/jaeger-performance-tests/issues/34
                     steps {
                         openshiftScale apiURL: '', authToken: '', depCfg: env.testTargetApp, namespace: '', replicaCount: env.EXAMPLE_PODS, verbose: 'true', verifyReplicaCount: 'true', waitTime: ''
                     }
-                }
+                }*/
         stage('Run JMeter Test') {
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
