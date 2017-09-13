@@ -70,17 +70,12 @@ pipeline {
                 }
         stage('Run JMeter Test') {
             steps{
-                sh '''
-                    rm -rf apache-jmeter*
-                    curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
-                    gunzip apache-jmeter-3.2.tgz
-                    tar -xf apache-jmeter-3.2.tar
-                    rm -rf log.txt reports
-
-                    export PORT=8080
-                    ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
-                    '''
+                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'mvn clean verify -Djmeter.clients=${JMETER_CLIENT_COUNT) -Djmeter.iterations=${ITERATIONS} -Djmeter.rampup=${RAMPUP) -Djmeter.url=${URL} -Djmeter.port=${PORT} -Djmeter.delay1=${DELAY1} -Djmeter.delay2=${DELAY2}'
+                }
+/*  FIXME figure out how to get the plugin to produce reports https://github.com/kevinearls/jaeger-performance-tests/issues/31
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
+*/
             }
         }
         stage('Delete Jaeger at end') {

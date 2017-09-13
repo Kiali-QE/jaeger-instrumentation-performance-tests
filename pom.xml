@@ -13,6 +13,14 @@
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.core.version>0.20.5</jaeger.core.version>
     <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
+    <jmeter.clients>100</jmeter.clients>
+    <jmeter.delay1>1</jmeter.delay1>
+    <jmeter.deley2>1</jmeter.deley2>
+    <jmeter.iterations>1000</jmeter.iterations>
+    <jmeter.maven.plugin.version>2.2.0</jmeter.maven.plugin.version>
+    <jmeter.port>8080</jmeter.port>
+    <jmeter.rampup>0</jmeter.rampup>
+    <jmeter.url>localhost</jmeter.url>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
@@ -35,6 +43,38 @@
     <module>spring-boot</module>
     <module>vertx</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.lazerycode.jmeter</groupId>
+        <artifactId>jmeter-maven-plugin</artifactId>
+        <version>${jmeter.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>jmeter-tests</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jmeter</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <testFilesDirectory>TestPlans</testFilesDirectory>
+          <resultsFileFormat>csv</resultsFileFormat>
+          <propertiesUser>
+            <ITERATIONS>${jmeter.iterations}</ITERATIONS>
+            <THREADCOUNT>${jmeter.clients}</THREADCOUNT>
+            <PORT>${jmeter.port}</PORT>
+            <URL>${jmeter.url}</URL>
+            <RAMPUP>${jmeter.rampup}</RAMPUP>
+            <DELAY1>${jmeter.delay1}</DELAY1>
+            <DELAY2>${jmeter.deley2}</DELAY2>
+          </propertiesUser>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>
