@@ -60,7 +60,7 @@ pipeline {
         }
         stage('verify example deployment'){
             steps{
-                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false'
+                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'true' retryCount:200
             }
         }
         stage('Run JMeter Test') {
