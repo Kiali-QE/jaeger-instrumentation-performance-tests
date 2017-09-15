@@ -17,16 +17,19 @@ pipeline {
                         }
                     }
 
-                    /* Now do each of the examples with each of the rates listed */
+                    /* Now do each of the examples with each of the rates listed for both NOOP and JAEGER tracers*/
+                    def tracers = ['NOOP', 'JAEGER']
                     def rates = env.RATES.split(',')
-                    for (String rate : rates) {
-                        for (String example : examples) {
-                            try {
-                                echo "Example ${example} with JAEGER using rate ${rate}"
-                                goBuild(example, 'JAEGER', rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
-                            } catch (error) {
-                                echo "!!!! Error !!!!"
-                                echo error
+                    for (String tracer : tracers {
+                        for (String rate : rates) {
+                            for (String example : examples) {
+                                try {
+                                    echo "Example ${example} with ${tracer} using rate ${rate}"
+                                    goBuild(example, tracer.trim(), rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                                } catch (error) {
+                                    echo "!!!! Error !!!!"
+                                    echo error
+                                }
                             }
                         }
                     }
