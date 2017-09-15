@@ -60,18 +60,16 @@
           </execution>
         </executions>
         <configuration>
-            <testFilesDirectory>TestPlans</testFilesDirectory>
-            <resultsFileFormat>csv</resultsFileFormat>
-            <generateReports>true</generateReports>
-            <reportDirectory>reports</reportDirectory>
-            <propertiesUser>
-                <ITERATIONS>${jmeter.iterations}</ITERATIONS>
-                <THREADCOUNT>${jmeter.clients}</THREADCOUNT>
-                <PORT>${jmeter.port}</PORT>
-                <URL>${jmeter.url}</URL>
-                <RAMPUP>${jmeter.rampup}</RAMPUP>
-                <DELAY1>${jmeter.delay1}</DELAY1>
-                <DELAY2>${jmeter.deley2}</DELAY2>
+          <testFilesDirectory>TestPlans</testFilesDirectory>
+          <resultsFileFormat>csv</resultsFileFormat>
+          <propertiesUser>
+            <ITERATIONS>${jmeter.iterations}</ITERATIONS>
+            <THREADCOUNT>${jmeter.clients}</THREADCOUNT>
+            <PORT>${jmeter.port}</PORT>
+            <URL>${jmeter.url}</URL>
+            <RAMPUP>${jmeter.rampup}</RAMPUP>
+            <DELAY1>${jmeter.delay1}</DELAY1>
+            <DELAY2>${jmeter.deley2}</DELAY2>
           </propertiesUser>
         </configuration>
       </plugin>
