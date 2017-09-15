@@ -20,7 +20,7 @@ pipeline {
                     /* Now do each of the examples with each of the rates listed for both NOOP and JAEGER tracers*/
                     def tracers = ['NOOP', 'JAEGER']
                     def rates = env.RATES.split(',')
-                    for (String tracer : tracers {
+                    for (String tracer : tracers) {
                         for (String rate : rates) {
                             for (String example : examples) {
                                 try {
