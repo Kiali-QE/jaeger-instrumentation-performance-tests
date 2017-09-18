@@ -110,6 +110,10 @@ To run the test click the `Build with Parameters` link.  Change the default para
 
 ### Viewing results
 
+To enable proper dsiplay of the results on the Jenkins console goto "Manage Jenkins" and then to "Script Console" type 
+in this text: **System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "")** and hit 
+
+Then for each build the results will be available using the `Performance Report` link on the left side of the page.  
 So far I have been unable to get the HTML Publisher Plugin to work correctly in Jenkins on OpenShift.  
 In order to see the full results, after running a job on Jenkins, click on the 
 `Performance Report` link on the left side of page, and then click on the `Zip` link on the top
