@@ -44,38 +44,6 @@
     <module>vertx</module>
   </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.lazerycode.jmeter</groupId>
-        <artifactId>jmeter-maven-plugin</artifactId>
-        <version>${jmeter.maven.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>jmeter-tests</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jmeter</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <testFilesDirectory>TestPlans</testFilesDirectory>
-          <resultsFileFormat>csv</resultsFileFormat>
-          <propertiesUser>
-            <ITERATIONS>${jmeter.iterations}</ITERATIONS>
-            <THREADCOUNT>${jmeter.clients}</THREADCOUNT>
-            <PORT>${jmeter.port}</PORT>
-            <URL>${jmeter.url}</URL>
-            <RAMPUP>${jmeter.rampup}</RAMPUP>
-            <DELAY1>${jmeter.delay1}</DELAY1>
-            <DELAY2>${jmeter.deley2}</DELAY2>
-          </propertiesUser>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <profiles>
     <profile>
       <id>openshift</id>
@@ -112,6 +80,40 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jmeter</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.lazerycode.jmeter</groupId>
+            <artifactId>jmeter-maven-plugin</artifactId>
+            <version>${jmeter.maven.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>jmeter-tests</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>jmeter</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <testFilesDirectory>TestPlans</testFilesDirectory>
+              <resultsFileFormat>csv</resultsFileFormat>
+              <propertiesUser>
+                <ITERATIONS>${jmeter.iterations}</ITERATIONS>
+                <THREADCOUNT>${jmeter.clients}</THREADCOUNT>
+                <PORT>${jmeter.port}</PORT>
+                <URL>${jmeter.url}</URL>
+                <RAMPUP>${jmeter.rampup}</RAMPUP>
+                <DELAY1>${jmeter.delay1}</DELAY1>
+                <DELAY2>${jmeter.deley2}</DELAY2>
+              </propertiesUser>
+            </configuration>
           </plugin>
         </plugins>
       </build>
