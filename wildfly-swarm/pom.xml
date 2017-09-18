@@ -20,7 +20,7 @@
     <opentracing.jaxrs.version>0.0.8</opentracing.jaxrs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>wildfly-swarm-demo</test.service.name>
-    <wildfly.swarm.version>2017.8.1</wildfly.swarm.version>
+    <wildfly.swarm.version>2017.9.4</wildfly.swarm.version>
   </properties>
 
   <dependencyManagement>
