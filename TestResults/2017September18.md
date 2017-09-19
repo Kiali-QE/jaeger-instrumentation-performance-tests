@@ -4,6 +4,8 @@
 **Number of test clients** `100`
 **Iterations** `10000`
 
+The results shown below are throughput in operations per seconds (i.e. a GET on and endpoint.)  For this test run there are 2 operations per iteration * 100 clients * 10000 iterations for a total of 2,000,000. 
+
 _NOTE!_ Numbers for the wildfly-swarm application with Jaeger are currently not available, as I had repeated problems
 getting that application to deploy.  I will update this table once that issue is resolved.
 
