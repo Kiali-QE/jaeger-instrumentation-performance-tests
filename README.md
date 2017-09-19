@@ -121,14 +121,20 @@ right corner of that page.  Unzip the `Performance_Report.zip` file that is down
 open `Performance_Report/index.html` in a browser to view the results.
 
 ### Kicking off a set of Jenkins Jobs
-The file `Jenkinsfile.multi` can be used to set off multiple runs of the main Jenkins job.  It requires three parameters:
+The file `Jenkinsfile.multi` can be used to set off multiple runs of the main Jenkins job.  It requires the following parameters:
++ *TEST_WILDFLY_SWARM* _boolean_ default `true` description `Include the wildfly-swarm example in tests`
++ *TEST_SPRING_BOOT* _boolean_ default `true` description `Include the spring-boot example in tests`
++ *TEST_VERTX* _boolean_ default `true` description `Include the vert-x example in tests`
++ *RUN_WITH_NO_TRACING* _boolean_ default `true` description `Test all examples with tracing turned off`
++ *RUN_WITH_NOOP_TRACER* _boolean_ default `true` description `Test all examples with the NOOP tracer`
++ *RUN_WITH_JAEGER* _boolean_ default `true` description `Test all examples with the Jaeger tracer`
 + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
 + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
 + *RATES* _String_ default `0.05, 0.01, 0.02` description `Comma separated lists of sampling rates`
 
-This job will kick off the primary job ("Jaeger Performance") once for each example application with no tracer in
-order to set a benchmark, and then once for each example application for each rate using JAEGER.
-
+This job will kick off the primary job ("Jaeger Performance") multiple times, depending on options selected.  If 
+RUN_WITH_NO_TRACING is selected we will run the job once for each test example that is selected.  If RUN_WITH_NOOP_TRACER
+or RUN_WITH_JAEGER are selected, the primary job will be run once with each tracer for each rate given in the RATES field.
 
 ## Details of the JMeter Test
 

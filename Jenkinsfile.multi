@@ -5,20 +5,38 @@ pipeline {
         stage ('Kick off jobs') {
             steps {
                 script {
-                    def examples = ['wildfly-swarm', 'spring-boot', 'vertx']
-                    
+                    def examples = []
+                    if (env.TEST_WILDFLY_SWARM == 'true') {
+                        examples << 'wildfly-swarm'
+                    }
+                    if (env.TEST_SPRING_BOOT == 'true') {
+                        examples << 'spring_boot'
+                    }
+                    if (env.TEST_VERTX == 'true') {
+                        examples << 'vertx'
+                    }
+
                     /* First do all examples with no-tracing to get a baseline */
-                    for (String example : examples) {
-                        try {
-                            echo "Running with ${example} with notracing"
-                            goBuild(example, 'NONE', '0.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
-                        } catch (error) {
-                            echo "!!!! Error !!!!"
+                    if (env.RUN_WITH_NO_TRACING == 'true') {
+                        for (String example : examples) {
+                            try {
+                                echo "Running with ${example} with notracing"
+                                goBuild(example, 'NONE', '0.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                            } catch (error) {
+                                echo "!!!! Error !!!!"
+                            }
                         }
                     }
 
-                    /* Now do each of the examples with each of the rates listed for both NOOP and JAEGER tracers*/
-                    def tracers = ['NOOP', 'JAEGER']
+                    /* Now do each of the examples with each of the rates listed for selected tracers*/
+                    def tracers = []
+                    if (env.RUN_WITH_NOOP_TRACER == 'true') {
+                        tracers << 'NOOP'
+                    }
+                    if (env.RUN_WITH_JAEGER == 'true') {
+                        tracers << 'JAEGER'
+                    }
+
                     def rates = env.RATES.split(',')
                     for (String tracer : tracers) {
                         for (String rate : rates) {
