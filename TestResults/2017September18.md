@@ -8,9 +8,16 @@ _NOTE!_ Numbers for the wildfly-swarm application with Jaeger are currently not 
 getting that application to deploy.  I will update this table once that issue is resolved.
 
 
-| App/Tracer|NONE| NOOP/0.05| NOOP/0.1 | NOOP/0.2 | NOOP/1.0 | JAEGER/0.05 | JAEGER/0.1| JAEGER/0.2| JAEGER/1.0 |
-| ------------- | -----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|
-| Wildfly-swarm|18169,60|18743,80|19272,30|19733,40|18823,40|NA|NA|NA|NA|  
-| Spring Boot|15983,20|15692,60|16070,60|16206,70|16117,70|9248,70|8593,10|8662,70|9026,60|  
-| Vert-X|17425,90|18155,10|18193,10|18029,60|17822,00|12806,80|12440,10|11999,60|11389,70| 
+| App/Tracer|NONE| NOOP/0.05| NOOP/0.1 | NOOP/0.2 | NOOP/1.0 |
+| ------------- | -----:|-----:|-----:|-----:|-----:|
+| Wildfly-swarm|18169,60|18743,80|19272,30|19733,40|18823,40|
+| Spring Boot|15983,20|15692,60|16070,60|16206,70|16117,70| 
+| Vert-X|17425,90|18155,10|18193,10|18029,60|17822,00|
+
+| App/Tracer|JAEGER/0.05|JAEGER/0.1|JAEGER/0.2|JAEGER/1.0|
+| ------------- | -----:|-----:|-----:|-----:|
+| Wildfly-swarm|NA|NA|NA|NA|  
+| Spring Boot|9248,70|8593,10|8662,70|9026,60| 
+| Vert-X|12806,80|12440,10|11999,60|11389,70|
+
 
