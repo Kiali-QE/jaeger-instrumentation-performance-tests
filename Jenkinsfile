@@ -27,18 +27,9 @@ pipeline {
                 }
             }
         }
-        stage('Cleanup workspace') {
-            steps {
-                sh 'ls -alF'
-            }
-        }
-        stage('deploy Jaeger Production Template') {
+        stage('deploy Jaeger') {
             steps {
                 sh 'oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
-            }
-        }
-        stage('verify Jaeger deployment'){
-            steps{
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
             }
@@ -56,26 +47,25 @@ pipeline {
                     sh 'git status'
                     sh 'mvn --file ${TARGET_APP}/pom.xml --activate-profiles openshift fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST}'
                 }
-            }
-        }
-        stage('verify example deployment'){
-            steps{
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false', retryCount:'200'
             }
         }
         stage('Run JMeter Test') {
             steps{
-                            sh '''
-                                rm -rf apache-jmeter*
-                                curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
-                                gunzip apache-jmeter-3.2.tgz
-                                tar -xf apache-jmeter-3.2.tar
-                                rm -rf log.txt reports
-                                export PORT=8080
-                                ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
-                                '''
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
-                        }
+                sh '''
+                    rm -rf apache-jmeter*
+                    curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
+                    gunzip apache-jmeter-3.2.tgz
+                    tar -xf apache-jmeter-3.2.tar
+                    rm -rf log.txt reports
+                    export PORT=8080
+                    ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
+                    '''
+
+                 env.THROUGHPUT = sh (returnStdout: true, script: 'grep "summary =" jmeter.log | tail -1 | sed "s/^.*summary = //g" | sed "s/^.*= //g" | sed "s/\\/s.*//g"')
+                 currentBuild.description = "Throughput: " + env.THROUGHPUT
+                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
+            }
         }
         stage('Delete Jaeger at end') {
             steps {
