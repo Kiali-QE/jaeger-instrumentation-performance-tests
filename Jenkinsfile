@@ -64,7 +64,9 @@ pipeline {
 
                 script {
                     env.THROUGHPUT = sh (returnStdout: true, script: 'grep "summary =" jmeter.log | tail -1 | sed "s/^.*summary = //g" | sed "s/^.*= //g" | sed "s/\\/s.*//g"')
-                    currentBuild.description = "Throughput: " + env.THROUGHPUT
+                    env.ERRORS = sh(returnStdout: true, script: 'grep "summary =" jmeter.log | tail -1 | sed "s/^.*Err:/Errors:/g"')
+
+                    currentBuild.description = "Throughput: " + env.THROUGHPUT + " " + env.ERRORS
                  }
                  publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'reports', reportFiles: 'index.html', reportName: 'Performance Report', reportTitles: ''])
             }
