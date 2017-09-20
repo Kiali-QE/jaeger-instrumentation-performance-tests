@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.kevinearls</groupId>
-    <artifactId>jaeger-performance-tests</artifactId>
+    <groupId>org.hawkular.qe</groupId>
+    <artifactId>jaeger-instrumentation-performance-tests</artifactId>
     <version>1.0.0</version>
   </parent>
 
-  <groupId>com.kevinearls</groupId>
+  <groupId>org.hawkular.qe.wildfly-swarm</groupId>
   <artifactId>jaeger-performance-wildfly-swarm-app</artifactId>
   <name>WildFly Swarm With Opentracing Example</name>
   <version>1.0.0</version>
