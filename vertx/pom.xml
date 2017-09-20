@@ -24,7 +24,7 @@
 		<java.version>1.8</java.version>
         <opentracing.contrib.vertx.version>0.0.1</opentracing.contrib.vertx.version>
 		<vertx.projectVersion>3.4.2</vertx.projectVersion>
-		<vertx.verticle>com.kevinearls.jaegerperformancetests.JaegerPerformanceTestsVerticle</vertx.verticle>
+		<vertx.verticle>org.hawkular.qe.vertx.JaegerPerformanceTestsVerticle</vertx.verticle>
 	</properties>
 
 	<dependencyManagement>
