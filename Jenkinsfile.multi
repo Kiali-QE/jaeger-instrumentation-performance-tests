@@ -24,6 +24,8 @@ pipeline {
                                 goBuild(example, 'NONE', '0.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
+                                echo error.getMessage()
+                                error.printStackTrace()
                             }
                         }
                     }
@@ -36,7 +38,8 @@ pipeline {
                                 goBuild(example, 'NOOP', '1.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
-                                echo error
+                                echo error.getMessage()
+                                error.printStackTrace()
                             }
                         }
                     }
@@ -50,7 +53,8 @@ pipeline {
                                 goBuild(example, 'JAEGER', rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
-                                echo error
+                                echo error.getMessage)_
+                                error.printStackTrace()
                             }
                         }
                     }
