@@ -103,13 +103,12 @@ Log back into Jenkins, and select `New Item`
     + *DELETE_JAEGER_AT_END* _Boolean_ default `true` description `Delete Jaeger instance at end of the test`
     + *DELETE_EXAMPLE_AT_END* _Boolean_ default `true` description `Delete the target application at end of the test`
 + Scroll down to the **Pipeline** section and select `Pipeline script from SCM`
-+ Select `Git` as the SCM and enter `https://github.com/kevinearls/wildfly-swarm-opentracing-demo.git` as 
++ Select `Git` as the SCM and enter `git@github.com:kevinearls/jaeger-instrumentation-performance-tests.git` as 
 the repository URL
 
 To run the test click the `Build with Parameters` link.  Change the default parameters to whatever you'd like.
 
 ### Viewing results
-
 To enable proper dsiplay of the results on the Jenkins console goto "Manage Jenkins" and then to "Script Console" type 
 in this text: **System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "")** and hit 
 
@@ -137,7 +136,6 @@ RUN_WITH_NO_TRACING is selected we will run the job once for each test example t
 or RUN_WITH_JAEGER are selected, the primary job will be run once with each tracer for each rate given in the RATES field.
 
 ## Details of the JMeter Test
-
 To run the performance test, use the following command: 
     `jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=100 -JITERATIONS=1000 -JRAMPUP=0 -JURL=localhost -JPORT=8080 --logfile log.txt --reportatendofloadtests --reportoutputfolder reports`
         
