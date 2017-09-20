@@ -1,6 +1,6 @@
 # Jaeger/OpenTracing Instrumentation Performance Test Run 18 September 2017
 
-**Host** `QE Openshift at b20.jonqe.lab.eng.bos.redhat.com:8443`
+**Host** `QE Openshift`
 **Number of test clients** `100`
 **Iterations** `10000`
 
