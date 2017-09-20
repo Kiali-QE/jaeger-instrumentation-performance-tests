@@ -6,10 +6,6 @@
 
 The results shown below are throughput in operations per seconds (i.e. a GET on and endpoint.)  For this test run there are 2 operations per iteration * 100 clients * 10000 iterations for a total of 2,000,000. 
 
-_NOTE!_ Numbers for the wildfly-swarm application with Jaeger are currently not available, as I had repeated problems
-getting that application to deploy.  I will update this table once that issue is resolved.
-
-
 | App/Tracer|NONE| NOOP/0.05| NOOP/0.1 | NOOP/0.2 | NOOP/1.0 |
 | ------------- | -----:|-----:|-----:|-----:|-----:|
 | Wildfly-swarm|18169,60|18743,80|19272,30|19733,40|18823,40|
