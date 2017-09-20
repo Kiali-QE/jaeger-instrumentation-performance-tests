@@ -28,29 +28,33 @@ pipeline {
                         }
                     }
 
-                    /* Now do each of the examples with each of the rates listed for selected tracers*/
-                    def tracers = []
+                    /* Optionally run with noop tracer*/
                     if (env.RUN_WITH_NOOP_TRACER == 'true') {
-                        tracers << 'NOOP'
-                    }
-                    if (env.RUN_WITH_JAEGER == 'true') {
-                        tracers << 'JAEGER'
-                    }
-
-                    def rates = env.RATES.split(',')
-                    for (String tracer : tracers) {
-                        for (String rate : rates) {
-                            for (String example : examples) {
-                                try {
-                                    echo "Example ${example} with ${tracer} using rate ${rate}"
-                                    goBuild(example, tracer.trim(), rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
-                                } catch (error) {
-                                    echo "!!!! Error !!!!"
-                                    echo error
-                                }
+                        for (String example : examples) {
+                            try {
+                                echo "Running with ${example} with notracing"
+                                goBuild(example, 'NOOP', '1.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                            } catch (error) {
+                                echo "!!!! Error !!!!"
+                                echo error
                             }
                         }
                     }
+
+                    /* Now run each of the examples with each of the rates listed with Jaeger */
+                    def rates = env.RATES.split(',')
+                    for (String rate : rates) {
+                        for (String example : examples) {
+                            try {
+                                echo "Example ${example} with Jaeger using rate ${rate}"
+                                goBuild(example, 'JAEGER', rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                            } catch (error) {
+                                echo "!!!! Error !!!!"
+                                echo error
+                            }
+                        }
+                    }
+
                 }
             }
         }
