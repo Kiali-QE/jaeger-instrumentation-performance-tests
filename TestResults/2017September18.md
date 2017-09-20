@@ -18,7 +18,7 @@ getting that application to deploy.  I will update this table once that issue is
 
 | App/Tracer|JAEGER/0.05|JAEGER/0.1|JAEGER/0.2|JAEGER/1.0|
 | ------------- | -----:|-----:|-----:|-----:|
-| Wildfly-swarm|NA|NA|NA|NA|  
+| Wildfly-swarm|11746,30|12422,30|12249,90|12441,90|  
 | Spring Boot|9248,70|8593,10|8662,70|9026,60| 
 | Vert-X|12806,80|12440,10|11999,60|11389,70|
 
