@@ -1,7 +1,13 @@
 # Jaeger/OpenTracing Instrumentation Performance Test Run 18 September 2017
 
-**Host** `QE Openshift at b20.jonqe.lab.eng.bos.redhat.com:8443`
+**Host** `QE Openshift`
+
+**OS version**: `v3.5.5.26`
+
+**Kubernetes Master**: `v1.5.2+43a9be4`
+
 **Number of test clients** `100`
+
 **Iterations** `10000`
 
 The results shown below are throughput in operations per seconds (i.e. a GET on and endpoint.)  For this test run there are 2 operations per iteration * 100 clients * 10000 iterations for a total of 2,000,000. 
