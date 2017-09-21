@@ -20,6 +20,23 @@ pipeline {
                 sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
             }
         }
+        stage('Cleanup and checkout') {
+            steps {
+                deleteDir()
+                sh 'echo after delete'
+                sh 'ls -alF'
+                script {
+                    if (env.TRACER_TYPE == 'JAEGER') {
+                        git 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
+                    } else {
+                        git branch: 'no-tracing', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
+                    }
+                }
+                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'mvn -f ${TARGET_APP}/pom.xml -Popenshift fabric8:undeploy'
+                }
+            }
+        }
         stage('Delete example app') {
             steps {
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
@@ -37,13 +54,6 @@ pipeline {
         stage('Deploy example application'){
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
-                    script {
-                        if (env.TRACER_TYPE == 'JAEGER') {
-                            git 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
-                        } else {
-                            git branch: 'no-tracing', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
-                        }
-                    }
                     sh 'git status'
                     sh 'mvn --file ${TARGET_APP}/pom.xml --activate-profiles openshift clean install fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST}'
                 }
