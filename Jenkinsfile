@@ -4,7 +4,6 @@ pipeline {
     environment {
         testTargetApp = 'jaeger-performance-' + "${TARGET_APP}" + '-app'
         JMETER_URL = "${testTargetApp}" + ".jaeger-infra.svc"
-         PATH="${tool 'jdk8'}/bin:$PATH"
     }
     stages {
         stage('Set name and description') {
