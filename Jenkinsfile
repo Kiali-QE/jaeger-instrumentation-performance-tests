@@ -63,12 +63,12 @@ pipeline {
             steps{
                 sh '''
                     rm -rf apache-jmeter*
-                    curl  http://mirrors.standaloneinstaller.com/apache//jmeter/binaries/apache-jmeter-3.2.tgz --output apache-jmeter-3.2.tgz
-                    gunzip apache-jmeter-3.2.tgz
-                    tar -xf apache-jmeter-3.2.tar
+                    curl  http://apache.mediamirrors.org//jmeter/binaries/apache-jmeter-3.3.tgz --output apache-jmeter-3.3.tgz
+                    gunzip apache-jmeter-3.3.tgz
+                    tar -xf apache-jmeter-3.3.tar
                     rm -rf log.txt reports
                     export PORT=8080
-                    ./apache-jmeter-3.2/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
+                    ./apache-jmeter-3.3/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
                     '''
 
                 script {
