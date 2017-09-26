@@ -63,7 +63,7 @@ select the `jaeger-infra` project, and do the following:
 + Click on `Add to Project`
 + Select 'Continuous Integration and Deployment'
 + Select `Jenkins Ephemeral` (Or `Jenkins-Persistent` if you have persistent volumes set up)
-+ Change the `Memory Limit` to `1024Mi`
++ Change the `Memory Limit` to at least `2048MiB`
 + Click `Create`
 
 It may take 5 minutes or so until you can login to Jenkins.
