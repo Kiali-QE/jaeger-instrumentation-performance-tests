@@ -94,6 +94,7 @@ Log back into Jenkins, and select `New Item`
     + *TARGET_APP* _Choice Parameter_ with values **wildfly-swarm**, **spring-boot**, and **vertx**
     + *JAEGER_AGENT_HOST* _String_ default `localhost` description `Hostname for Jaeger Ageent`
     + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
+    + *JAEGER_MAX_QUEUE_SIZE* _String_ default `100` description `Tracer queue size`
     + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
     + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
     + *EXAMPLE_PODS* _String_ default `1` description 'The number of pods to deploy for the example application`

@@ -12,6 +12,7 @@
     <fabric8.maven.plugin.version>3.5.31</fabric8.maven.plugin.version>
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.core.version>0.20.5</jaeger.core.version>
+    <jaeger.max.queue.size>100</jaeger.max.queue.size>
     <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
     <jmeter.clients>100</jmeter.clients>
     <jmeter.delay1>1</jmeter.delay1>
@@ -75,6 +76,7 @@
                       <JAEGER_SAMPLING_RATE>${jaeger.sampling.rate}</JAEGER_SAMPLING_RATE>
                       <JAEGER_AGENT_HOST>${jaeger.agent.host}</JAEGER_AGENT_HOST>
                       <TEST_SERVICE_NAME>${test.service.name}</TEST_SERVICE_NAME>
+                      <JAEGER_MAX_QUEUE_SIZE>${jaeger.max.queue.size}</JAEGER_MAX_QUEUE_SIZE>
                     </env>
                   </resources>
                 </configuration>
