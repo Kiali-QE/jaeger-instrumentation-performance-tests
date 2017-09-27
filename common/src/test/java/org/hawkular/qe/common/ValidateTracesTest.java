@@ -2,6 +2,10 @@ package org.hawkular.qe.common;
 
 import com.datastax.driver.core.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -43,13 +47,16 @@ public class ValidateTracesTest {
     }
 
     @Test
-    public void testCountTraces() {
+    public void testCountTraces()  throws IOException {
         Session session = cluster.connect(KEYSPACE_NAME);
         ResultSet result = session.execute(QUERY);
-        //logger.info(">>>>> TRACE COUNT: " + result.all().toString());
         Row one = result.one();
         long traceCount = one.getLong(0);
         logger.info(">>>>> TRACE COUNT: " + traceCount);
+
+        // FIXME At some point we need to pass in the expected trace count.  In the short term write it to a file.  Then
+        // We can have the JenkinsFIle add it to the description of the job
+        Files.write(Paths.get("traceCount.txt"), Long.toString(traceCount).getBytes(), StandardOpenOption.CREATE);
     }
 
     @Test
