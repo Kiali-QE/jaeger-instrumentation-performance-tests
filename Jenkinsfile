@@ -86,7 +86,7 @@ pipeline {
                     sh 'mvn --file common/pom.xml -Dcluster.ip=cassandra -Dkeyspace.name=jaeger_v1_dc1 -Dquery="SELECT COUNT(*) FROM traces" clean test'
                 }
                 script {
-                    env.TRACE_COUNT=readFile 'traces.txt'
+                    env.TRACE_COUNT=readFile 'common/traceCount.txt'
                     currentBuild.description = currentBuild.description + " Trace count " + env.TRACE_COUNT
                 }
             }
