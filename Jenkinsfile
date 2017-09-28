@@ -9,7 +9,7 @@ pipeline {
         stage('Set name and description') {
             steps {
                 script {
-                    currentBuild.displayName = env.TARGET_APP + " " + env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS + " " + env.JAEGER_SAMPLING_RATE
+                    currentBuild.displayName = env.TARGET_APP + " " + env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " " + env.ITERATIONS + " " + env.JAEGER_SAMPLING_RATE + " QS: " + env.JAEGER_MAX_QUEUE_SIZE
                     currentBuild.description = env.TARGET_APP + " " + env.TRACER_TYPE + " " + env.JMETER_CLIENT_COUNT + " clients " + env.ITERATIONS + " iterations " + env.JAEGER_SAMPLING_RATE + " sampling"
                 }
             }
