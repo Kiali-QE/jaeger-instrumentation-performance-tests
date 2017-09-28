@@ -21,6 +21,7 @@ import com.uber.jaeger.metrics.NullStatsReporter;
 import com.uber.jaeger.metrics.StatsFactoryImpl;
 import com.uber.jaeger.reporters.RemoteReporter;
 import com.uber.jaeger.reporters.Reporter;
+import com.uber.jaeger.samplers.ConstSampler;
 import com.uber.jaeger.samplers.ProbabilisticSampler;
 import com.uber.jaeger.samplers.Sampler;
 import com.uber.jaeger.senders.Sender;
@@ -76,7 +77,9 @@ public class TracingContextListener implements ServletContextListener {
             Sender sender = new UdpSender(JAEGER_AGENT_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
             Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
             Reporter reporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
-            Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
+            
+            //Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
+            Sampler sampler = new ConstSampler(true);
             tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME, reporter, sampler)
                     .build();
         } else {
@@ -84,6 +87,7 @@ public class TracingContextListener implements ServletContextListener {
             tracer = NoopTracerFactory.create();
         }
 
+        System.out.println(">>>>>> Returning tracer " + tracer.toString());
         return tracer;
     }
 }
