@@ -53,7 +53,7 @@ pipeline {
                                 goBuild(example, 'JAEGER', rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
-                                echo error.getMessage)_
+                                echo error.getMessage()
                                 error.printStackTrace()
                             }
                         }
