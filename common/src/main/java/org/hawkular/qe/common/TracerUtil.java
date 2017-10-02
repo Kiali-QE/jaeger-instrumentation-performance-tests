@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.qe.vertx.util;
+package org.hawkular.qe.common;
 
 import com.uber.jaeger.metrics.Metrics;
 import com.uber.jaeger.metrics.NullStatsReporter;
@@ -49,8 +49,10 @@ public class TracerUtil {
         Tracer tracer;
 
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
-            logger.info("Using JAEGER tracer using host [" + JAEGER_AGENT_HOST + "] port [" + JAEGER_UDP_PORT
-                    + "] Service Name " + TEST_SERVICE_NAME + " Sampling rate " + JAEGER_SAMPLING_RATE);
+            logger.info("Using JAEGER tracer using host [" + JAEGER_AGENT_HOST + "] port [" + JAEGER_UDP_PORT +
+                    "] Service Name [" + TEST_SERVICE_NAME + "] Sampling rate [" + JAEGER_SAMPLING_RATE
+                    + "] Max queue size: [" + JAEGER_MAX_QUEUE_SIZE + "]");
+
 
             Sender sender = new UdpSender(JAEGER_AGENT_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
             Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));

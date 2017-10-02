@@ -23,13 +23,12 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-
 import org.hawkular.qe.vertx.util.BackendService;
 
 import java.util.Date;
 import java.util.logging.Logger;
 
-import static org.hawkular.qe.vertx.util.TracerUtil.jaegerTracer;
+import static org.hawkular.qe.common.TracerUtil.jaegerTracer;
 
 public class JaegerPerformanceTestsVerticle extends AbstractVerticle {
     private static Logger logger = Logger.getLogger(JaegerPerformanceTestsVerticle.class.getName());

@@ -61,6 +61,12 @@
             <artifactId>opentracing-vertx-web</artifactId>
             <version>${opentracing.contrib.vertx.version}</version>
         </dependency>
+
+		<dependency>
+			<groupId>org.hawkular.qe.common</groupId>
+			<artifactId>jaeger-performance-common-code</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

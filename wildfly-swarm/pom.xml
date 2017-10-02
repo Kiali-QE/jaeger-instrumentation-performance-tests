@@ -84,6 +84,12 @@
       <groupId>com.uber.jaeger</groupId>
       <artifactId>jaeger-core</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.hawkular.qe.common</groupId>
+      <artifactId>jaeger-performance-common-code</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <profiles>
