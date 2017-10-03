@@ -79,6 +79,9 @@ pipeline {
         stage('Validate Traces') {
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'pwd'
+                    sh 'ls -alF'
+                    sh 'ls -alF common'
                     sh 'mvn --file common/pom.xml -Dcluster.ip=cassandra -Dkeyspace.name=jaeger_v1_dc1 -Dquery="SELECT COUNT(*) FROM traces" clean test'
                 }
                 script {
