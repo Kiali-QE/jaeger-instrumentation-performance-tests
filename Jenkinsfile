@@ -22,8 +22,6 @@ pipeline {
         stage('Cleanup and checkout') {
             steps {
                 deleteDir()
-                sh 'echo after delete'
-                sh 'ls -alF'
                 script {
                     if (env.TRACER_TYPE != 'NONE') {
                         git 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
@@ -44,6 +42,9 @@ pipeline {
             }
         }
         stage('deploy Jaeger') {
+            when {
+                expression { params.TRACER_TYPE == 'JAEGER'}
+            }
             steps {
                 sh 'oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
@@ -78,7 +79,7 @@ pipeline {
         }
         stage('Validate Traces') {
             when {
-                expression { params.TRACER_TYPE != 'NONE'}
+                expression { params.TRACER_TYPE == 'JAEGER'}
             }
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
@@ -91,6 +92,9 @@ pipeline {
             }
         }
         stage('Delete Jaeger at end') {
+            when {
+                expression { params.TRACER_TYPE == 'JAEGER' && env.DELETE_JAEGER_AT_END == 'true' }
+            }
             steps {
                 script {
                     if (env.DELETE_JAEGER_AT_END == 'true') {
