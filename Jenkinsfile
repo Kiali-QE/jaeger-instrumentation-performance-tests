@@ -62,15 +62,11 @@ pipeline {
         stage('Run JMeter Test') {
             steps{
                 sh '''
-                    rm -rf apache-jmeter*
-                    curl  http://apache.mediamirrors.org//jmeter/binaries/apache-jmeter-3.3.tgz --output apache-jmeter-3.3.tgz
-                    gunzip apache-jmeter-3.3.tgz
-                    tar -xf apache-jmeter-3.3.tar
+
                     rm -rf log.txt reports
                     export PORT=8080
-                    ./apache-jmeter-3.3/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
+                    ~/tools/apache-jmeter-3.3/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
                     '''
-
                 script {
                     env.THROUGHPUT = sh (returnStdout: true, script: 'grep "summary =" jmeter.log | tail -1 | sed "s/^.*summary = //g" | sed "s/^.*= //g" | sed "s/\\/s.*//g"')
                     env.ERRORS = sh(returnStdout: true, script: 'grep "summary =" jmeter.log | tail -1 | sed "s/^.*Err:/Errors:/g"')
