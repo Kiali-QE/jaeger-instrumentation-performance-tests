@@ -44,9 +44,6 @@ pipeline {
                         git branch: 'no-tracing', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
                     }
                 }
-                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
-                    sh 'mvn -f ${TARGET_APP}/pom.xml -Popenshift fabric8:undeploy'
-                }
             }
         }
         stage('Delete example app') {
