@@ -4,7 +4,10 @@ pipeline {
     parameters {
         choice(choices: 'JAEGER\nNOOP\nNONE', description: 'Which tracer to use', name: 'TRACER_TYPE')
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
+        choice(choices: 'AGENT\nCOLLECTOR', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
+        string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.jaeger-infra.svc', description: 'Host where the collector is running')   // FIXME
+        string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
         string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '100', description: 'Tracer queue size')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
@@ -34,7 +37,7 @@ pipeline {
                 sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
             }
         }
-        stage('Cleanup and checkout') {
+        stage('Cleanup, checkout, build') {
             steps {
                 deleteDir()
                 script {
@@ -43,6 +46,10 @@ pipeline {
                     } else {
                         git branch: 'no-tracing', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
                     }
+                }
+                /* We need to build here so stuff in common wil be available */
+                withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'mvn -Dtest=false -DfailIfNoTests=false clean install'
                 }
             }
         }
