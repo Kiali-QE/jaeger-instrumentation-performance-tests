@@ -145,6 +145,7 @@ The file `Jenkinsfile.multi` can be used to set off multiple runs of the main Je
 + *RUN_WITH_JAEGER* _boolean_ default `true` description `Test all examples with the Jaeger tracer`
 + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
 + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
++ *JAEGER_MAX_QUEUE_SIZE* _String_ default `100` description `Tracer queue size`
 + *RATES* _String_ default `0.05, 0.01, 0.02` description `Comma separated lists of sampling rates`
 
 This job will kick off the primary job ("Jaeger Performance") multiple times, depending on options selected.  If 
