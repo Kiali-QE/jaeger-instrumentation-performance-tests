@@ -104,25 +104,15 @@ For the time being the job depends on JMeter being installed in Jenkins's tools 
 Log back into Jenkins, and select `New Item`
 
 + Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
-+ Select `This project is parameterized` and add the following parameters
-    + *TRACER_TYPE* _Choice Parameter_ with values **JAEGER**, **NOOP**, or **NONE**
-    + *TARGET_APP* _Choice Parameter_ with values **wildfly-swarm**, **spring-boot**, and **vertx**
-    + *JAEGER_AGENT_HOST* _String_ default `localhost` description `Hostname for Jaeger Ageent`
-    + *JAEGER_SAMPLING_RATE* _String_ default `1.0` description `0.0 to 1.0 percent of spans to record`
-    + *JAEGER_MAX_QUEUE_SIZE* _String_ default `100` description `Tracer queue size`
-    + *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
-    + *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
-    + *EXAMPLE_PODS* _String_ default `1` description 'The number of pods to deploy for the example application`
-    + *RAMPUP* _String_ default `30` description 'The number of seconds to take to start all clients`
-    + *DELAY1* _String_ default `5` description `delay after hitting /singleSpan`
-    + *DELAY2* _String_ default `5` description `delay after hitting /spanWithChild`
-    + *DELETE_JAEGER_AT_END* _Boolean_ default `true` description `Delete Jaeger instance at end of the test`
-    + *DELETE_EXAMPLE_AT_END* _Boolean_ default `true` description `Delete the target application at end of the test`
 + Scroll down to the **Pipeline** section and select `Pipeline script from SCM`
 + Select `Git` as the SCM and enter `git@github.com:kevinearls/jaeger-instrumentation-performance-tests.git` as 
 the repository URL
 
 To run the test click the `Build with Parameters` link.  Change the default parameters to whatever you'd like.
+
+NOTE: This job requires a number of parameters which are defined in the Jenkinsfile.  At the time of this writing there is
+a bug in Jenkins where you will not see any of the parameters the first time the job is run.  After the first run and
+subsequent failure, they should be shown on any build.
 
 ### Viewing results
 To enable proper dsiplay of the results on the Jenkins console goto "Manage Jenkins" and then to "Script Console" type 
