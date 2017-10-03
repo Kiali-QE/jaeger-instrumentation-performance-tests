@@ -84,6 +84,21 @@ Once you can log onto Jenkins, there are two further configuration steps
     
 Wait 5 minutes or so for Jenkins to restart so you can reconnect
 
+## Install JMeter on the Jenkins Pod
+NOTE: We need to find a better long term solution for this.  Ideally, we would use the **Jenkins Global Tool** page to manage this
+in the same way as other tools like Maven and Java.  However I tried the [Custom Tools Plugin](https://wiki.jenkins.io/display/JENKINS/Custom+Tools+Plugin) on 
+my personal Jenkins instance, and it broke the **Jenkins Global Tool** page
+
+For the time being the job depends on JMeter being installed in Jenkins's tools directory on the Jenkins pod.  To install:
+
++ `oc login` to the OpenShift instance
++ `oc project jaeger-infra`
++ `oc get pods | grep jenkins`
++ `oc rsh <jenkins-pod>`
++ `cd /var/lib/jenkins/tools`
++ Download [JMeter 3.3] (http://apache.mindstudios.com/jmeter/binaries/apache-jmeter-3.3.tgz) and extract it to `apache-jmeter-3.3`
++ `~/tools/apache-jmeter-3.3/bin/jmeter --version` to validate the installation
+
 ### Creating the Jenkins job
 
 Log back into Jenkins, and select `New Item`
