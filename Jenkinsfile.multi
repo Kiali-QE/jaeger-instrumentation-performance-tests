@@ -1,27 +1,39 @@
 pipeline {
     agent any
+    parameters {
+        booleanParam(name: 'TEST_WILDFLY_SWARM', defaultValue: true, description: 'Include the wildfly-swarm example in tests')
+        booleanParam(name: 'TEST_SPRING_BOOT', defaultValue: true, description: 'Include the spring-boot example in tests')
+        booleanParam(name: 'TEST_VERTX', defaultValue: true, description: 'Include the vert-x example in tests')
+        booleanParam(name: 'RUN_WITH_NO_TRACING', defaultValue: true, description: 'Test all examples with tracing turned off')
+        booleanParam(name: 'RUN_WITH_NOOP_TRACER', defaultValue: true, description: 'Test all examples with the NOOP tracer')
+        booleanParam(name: 'RUN_WITH_JAEGER', defaultValue: true, description: 'Test all examples with the Jaeger tracer')
+        string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
+        string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
+        string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '65535', description: 'Tracer queue size')
+        string(name: 'RATES', defaultValue: '0.05,0.1,0.2,1.0', description: 'Comma separated lists of sampling rates')
+    }
 
     stages {
         stage ('Kick off jobs') {
             steps {
                 script {
                     def examples = []
-                    if (env.TEST_WILDFLY_SWARM == 'true') {
+                    if (params.TEST_WILDFLY_SWARM ) {
                         examples << 'wildfly-swarm'
                     }
-                    if (env.TEST_SPRING_BOOT == 'true') {
+                    if (params.TEST_SPRING_BOOT ) {
                         examples << 'spring_boot'
                     }
-                    if (env.TEST_VERTX == 'true') {
+                    if (params.TEST_VERTX ) {
                         examples << 'vertx'
                     }
 
                     /* First do all examples with no-tracing to get a baseline */
-                    if (env.RUN_WITH_NO_TRACING == 'true') {
+                    if (params.RUN_WITH_NO_TRACING ) {
                         for (String example : examples) {
                             try {
                                 echo "Running with ${example} with notracing"
-                                goBuild(example, 'NONE', '0.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                                goBuild(example, 'NONE', '0.0', params.JMETER_CLIENT_COUNT, params.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
                                 echo error.getMessage()
@@ -31,11 +43,11 @@ pipeline {
                     }
 
                     /* Optionally run with noop tracer*/
-                    if (env.RUN_WITH_NOOP_TRACER == 'true') {
+                    if (params.RUN_WITH_NOOP_TRACER ) {
                         for (String example : examples) {
                             try {
                                 echo "Running with ${example} with notracing"
-                                goBuild(example, 'NOOP', '1.0', env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                                goBuild(example, 'NOOP', '1.0', params.JMETER_CLIENT_COUNT, params.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
                                 echo error.getMessage()
@@ -45,12 +57,12 @@ pipeline {
                     }
 
                     /* Now run each of the examples with each of the rates listed with Jaeger */
-                    def rates = env.RATES.split(',')
+                    def rates = params.RATES.split(',')
                     for (String rate : rates) {
                         for (String example : examples) {
                             try {
                                 echo "Example ${example} with Jaeger using rate ${rate}"
-                                goBuild(example, 'JAEGER', rate.trim(), env.JMETER_CLIENT_COUNT, env.ITERATIONS)
+                                goBuild(example, 'JAEGER', rate.trim(), params.JMETER_CLIENT_COUNT, params.ITERATIONS)
                             } catch (error) {
                                 echo "!!!! Error !!!!"
                                 echo error.getMessage()
@@ -70,7 +82,7 @@ def goBuild(example, tracer, rate, clients, iterations) {
         string(name: 'TARGET_APP', value: example), 
         string(name: 'JAEGER_AGENT_HOST', value: 'localhost'), 
         string(name: 'JAEGER_SAMPLING_RATE', value: rate),
-        string(name: 'JAEGER_MAX_QUEUE_SIZE', value: env.JAEGER_MAX_QUEUE_SIZE),
+        string(name: 'JAEGER_MAX_QUEUE_SIZE', value: params.JAEGER_MAX_QUEUE_SIZE),
         string(name: 'JMETER_CLIENT_COUNT', value: clients), 
         string(name: 'ITERATIONS', value: iterations), 
         string(name: 'EXAMPLE_PODS', value: '1'), 

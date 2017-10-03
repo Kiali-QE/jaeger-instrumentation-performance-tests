@@ -103,7 +103,7 @@ For the time being the job depends on JMeter being installed in Jenkins's tools 
 
 Log back into Jenkins, and select `New Item`
 
-+ Enter whatever name you'd like, select `Pipeline Script`, and click `OK`
++ Enter the name **Jaeger Performance**, select `Pipeline Script`, and click `OK`
 + Scroll down to the **Pipeline** section and select `Pipeline script from SCM`
 + Select `Git` as the SCM and enter `git@github.com:kevinearls/jaeger-instrumentation-performance-tests.git` as 
 the repository URL
@@ -126,17 +126,8 @@ right corner of that page.  Unzip the `Performance_Report.zip` file that is down
 open `Performance_Report/index.html` in a browser to view the results.
 
 ### Kicking off a set of Jenkins Jobs
-The file `Jenkinsfile.multi` can be used to set off multiple runs of the main Jenkins job.  It requires the following parameters:
-+ *TEST_WILDFLY_SWARM* _boolean_ default `true` description `Include the wildfly-swarm example in tests`
-+ *TEST_SPRING_BOOT* _boolean_ default `true` description `Include the spring-boot example in tests`
-+ *TEST_VERTX* _boolean_ default `true` description `Include the vert-x example in tests`
-+ *RUN_WITH_NO_TRACING* _boolean_ default `true` description `Test all examples with tracing turned off`
-+ *RUN_WITH_NOOP_TRACER* _boolean_ default `true` description `Test all examples with the NOOP tracer`
-+ *RUN_WITH_JAEGER* _boolean_ default `true` description `Test all examples with the Jaeger tracer`
-+ *JMETER_CLIENT_COUNT* _String_ default `50`  description `The number of client threads JMeter should create`
-+ *ITERATIONS* _String_ default `1000` description `The number of iterations each client should execute`
-+ *JAEGER_MAX_QUEUE_SIZE* _String_ default `100` description `Tracer queue size`
-+ *RATES* _String_ default `0.05, 0.01, 0.02` description `Comma separated lists of sampling rates`
+The file `Jenkinsfile.multi` can be used to set off multiple runs of the main Jenkins job.  Follow the instructions for
+creating the Jaeger Performance job above, but change the `Script Path` name to `Jenkinsfile.multi`
 
 This job will kick off the primary job ("Jaeger Performance") multiple times, depending on options selected.  If 
 RUN_WITH_NO_TRACING is selected we will run the job once for each test example that is selected.  If RUN_WITH_NOOP_TRACER
