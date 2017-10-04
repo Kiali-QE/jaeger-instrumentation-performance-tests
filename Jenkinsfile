@@ -7,7 +7,7 @@ pipeline {
         choice(choices: 'AGENT\nCOLLECTOR', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
         string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.jaeger-infra.svc', description: 'Host where the collector is running')   // FIXME
-        string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
+        string(name: 'MY_JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
         string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '100', description: 'Tracer queue size')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
@@ -35,6 +35,7 @@ pipeline {
         stage('Delete Jaeger') {
             steps {
                 sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
+                sh 'env | sort'
             }
         }
         stage('Cleanup, checkout, build') {
