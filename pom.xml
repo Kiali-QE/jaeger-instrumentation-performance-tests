@@ -28,6 +28,7 @@
     <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>jaeger-performance-tests</test.service.name>
+    <version.maven.plugin.verxion>2.5</version.maven.plugin.verxion>
   </properties>
 
   <dependencyManagement>
@@ -123,5 +124,24 @@
       </build>
     </profile>
   </profiles>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>${version.maven.plugin.verxion}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependency-updates-report</report>
+              <report>plugin-updates-report</report>
+              <report>property-updates-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
