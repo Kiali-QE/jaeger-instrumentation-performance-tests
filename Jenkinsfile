@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'HOURS')
+    }
     parameters {
         choice(choices: 'JAEGER\nNOOP\nNONE', description: 'Which tracer to use', name: 'TRACER_TYPE')
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
