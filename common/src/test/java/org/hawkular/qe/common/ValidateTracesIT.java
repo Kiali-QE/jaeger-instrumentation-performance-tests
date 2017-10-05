@@ -15,14 +15,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ValidateTracesTest {
+public class ValidateTracesIT {
     private static Map<String, String> envs = System.getenv();
 
     private static String CLUSTER_IP;
     private static String KEYSPACE_NAME;
     private static String QUERY;
 
-    private static Logger logger = Logger.getLogger(ValidateTracesTest.class.getName());
+    private static Logger logger = Logger.getLogger(ValidateTracesIT.class.getName());
 
     private Cluster cluster;
 
