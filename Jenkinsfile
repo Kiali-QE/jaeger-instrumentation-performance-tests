@@ -54,7 +54,7 @@ pipeline {
                 }
                 /* We need to build here so stuff in common wil be available */
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
-                    sh 'mvn -Dtest=false -DfailIfNoTests=false clean install'
+                    sh 'mvn -DskipITs clean install'
                 }
             }
         }
