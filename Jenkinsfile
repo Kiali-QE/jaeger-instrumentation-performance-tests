@@ -11,7 +11,7 @@ pipeline {
         choice(choices: 'AGENT\nCOLLECTOR', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
         string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.jaeger-infra.svc', description: 'Host where the collector is running')   // FIXME
-        string(name: 'MY_JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
+        string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
         string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '100', description: 'Tracer queue size')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
@@ -79,7 +79,7 @@ pipeline {
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     sh 'git status'
-                    sh 'mvn --file ${TARGET_APP}/pom.xml --activate-profiles openshift clean install fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST} -Djaeger.max.queue.size=${JAEGER_MAX_QUEUE_SIZE}'
+                    sh 'mvn --file ${TARGET_APP}/pom.xml --activate-profiles openshift clean install fabric8:deploy -Djaeger.sampling.rate=${JAEGER_SAMPLING_RATE} -Djaeger.agent.host=${JAEGER_AGENT_HOST} -Djaeger.max.queue.size=${JAEGER_MAX_QUEUE_SIZE} -Duser.agent.or.collector=${USE_AGENT_OR_COLLECTOR} -Djaeger.collector.port=${JAEGER_COLLECTOR_PORT} -Djaeger.collector.host=${JAEGER_COLLECTOR_HOST}'
                 }
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false', retryCount:'200'
             }
