@@ -31,8 +31,10 @@ pipeline {
         stage('Set name and description') {
             steps {
                 script {
-                    currentBuild.displayName = params.TARGET_APP + " " + params.TRACER_TYPE + " " + params.JMETER_CLIENT_COUNT + " " + params.ITERATIONS + " " + params.JAEGER_SAMPLING_RATE + " QS: " + params.JAEGER_MAX_QUEUE_SIZE + " D1: " + params.DELAY1  + " D2: " + params.DELAY2
-                    currentBuild.description = params.TARGET_APP + " " + params.TRACER_TYPE + " " + params.JMETER_CLIENT_COUNT + " clients " + params.ITERATIONS + " iterations " + params.JAEGER_SAMPLING_RATE + " sampling"
+                    currentBuild.displayName = params.TARGET_APP + " " + params.TRACER_TYPE + " " + params.USE_AGENT_OR_COLLECTOR +
+                        " " + params.JMETER_CLIENT_COUNT + " " + params.ITERATIONS + " " + params.JAEGER_SAMPLING_RATE + " QS: "  +
+                        params.JAEGER_MAX_QUEUE_SIZE + " D1: " + params.DELAY1  + " D2: " + params.DELAY2
+                    currentBuild.description = currentBuild.displayName
                 }
             }
         }
