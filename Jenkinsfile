@@ -109,6 +109,7 @@ pipeline {
             }
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
+                    sh 'rm common/traceCount.txt'
                     sh 'mvn --file common/pom.xml -Dcluster.ip=cassandra -Dkeyspace.name=jaeger_v1_dc1 -Dquery="SELECT COUNT(*) FROM traces" clean integration-test'
                 }
                 script {
