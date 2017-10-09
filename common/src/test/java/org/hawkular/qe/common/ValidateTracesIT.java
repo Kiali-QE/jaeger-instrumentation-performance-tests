@@ -17,24 +17,23 @@
 package org.hawkular.qe.common;
 
 import com.datastax.driver.core.*;
+import org.junit.*;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
-
-import org.junit.*;
 
 public class ValidateTracesIT {
     private static Map<String, String> envs = System.getenv();
 
     private static String CLUSTER_IP;
     private static String KEYSPACE_NAME;
-    private static String QUERY;  // TODO remove?
 
     private static Logger logger = Logger.getLogger(ValidateTracesIT.class.getName());
 
@@ -64,57 +63,25 @@ public class ValidateTracesIT {
      * then write the result to a text file, which the Jenkinsfile will then use to report the result.  In the future
      * the expected count could be passed in and the test could run against that.
      *
-     * NOTE: select count(*) in Cassandra will often time out as it considers that an inefficient operation.  In order to
-     * avoid this we will get counts in one second chunks and report the sum
+     * NOTE: select count(*) in Cassandra will often time out as it considers that an inefficient operation.  It will
+     * however, happily permit us to do select *, so that is the hackerific workaround here.
      * @throws IOException
      */
     @Test
     public void testCountTraces()  throws IOException {
         Session session = cluster.connect(KEYSPACE_NAME);
-        long minStartTime = getAggregateValue(session, "select min(start_time) from traces ALLOW FILTERING");
-        long maxStartTime = getAggregateValue(session, "select max(start_time) from traces ALLOW FILTERING");
-        logger.info("MIN " + minStartTime + " MAX " + maxStartTime + " DIFF " + (maxStartTime - minStartTime)/1000);
 
-        long totalTraceCount = 0;
-        long startTime = minStartTime;
-        long interval = 1_000_000L;  // Trace start_time is in microseconds, so this should get 1 sec at a time.
-        while (startTime <= (maxStartTime + 1)) {
-            long endTime = startTime + interval;
-            String query = "select count(*) from traces where  start_time >=" + startTime + " AND start_time <" + endTime + " ALLOW FILTERING;";
-            long currentTraceCount = getAggregateValue(session, query);
-            startTime = endTime;
-            totalTraceCount += currentTraceCount;
-        }
+        ResultSet result = session.execute("select * from traces");
+        RowCountingConsumer consumer = new RowCountingConsumer();
+        result.iterator()
+                .forEachRemaining(consumer);
+        int totalTraceCount = consumer.getRowCount();
+        logger.info(">>>> GOT " + totalTraceCount + "rows");
 
-        logger.info(">>>>> TRACE COUNT: " + totalTraceCount);
         // FIXME At some point we need to pass in the expected trace count.  In the short term write it to a file.  Then
         // We can have the JenkinsFIle add it to the description of the job
         Files.write(Paths.get("traceCount.txt"), Long.toString(totalTraceCount).getBytes(), StandardOpenOption.CREATE);
     }
-
-    /**
-     * This method is to simplify aggregate queries.
-     *
-     * @param session The Cassandra session
-     * @param query Text of the query
-     * @return single long result of the query: COUNT, MAX, MIN, etc.
-     */
-    private long getAggregateValue(Session session, String query) {
-        ResultSet result = session.execute(query);
-
-        String firstRowValue = result.one().toString();
-        // In a non-stupid world. Cassandra would be able to convert its own bigint type to a java BigInteger
-        // without having to manually load codecs.  For now we will go with this hacky, but simpler solution
-        // This will return "Row[nnnn]"  So we need to chop of Row[ and the tailing ]
-        String start = firstRowValue.substring(4);
-        String finalValue = start.substring(0, start.length() - 1);
-        long aggregate = new Long(finalValue);
-
-        logger.info("Query [" + query + "] returned [" + aggregate + "]");
-        return aggregate;
-    }
-
-
 
 
     @Ignore
@@ -132,7 +99,18 @@ public class ValidateTracesIT {
         for (KeyspaceMetadata keyspace : keyspaces) {
             logger.info(">>>> KEYSPACE: " + keyspace.getName());
         }
+    }
+}
 
+class RowCountingConsumer implements Consumer<Row> {
+    AtomicInteger rowCount = new AtomicInteger(0);
 
+    @Override
+    public void accept(Row r) {
+        rowCount.getAndIncrement();
+    }
+
+    public int getRowCount() {
+        return rowCount.get();
     }
 }
