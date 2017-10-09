@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.hawkular.qe.common;
 
 import com.datastax.driver.core.*;
@@ -18,7 +34,7 @@ public class ValidateTracesIT {
 
     private static String CLUSTER_IP;
     private static String KEYSPACE_NAME;
-    private static String QUERY;
+    private static String QUERY;  // TODO remove?
 
     private static Logger logger = Logger.getLogger(ValidateTracesIT.class.getName());
 
@@ -28,8 +44,7 @@ public class ValidateTracesIT {
     public static void beforeClass() {
         CLUSTER_IP = System.getProperty("cluster.ip", "cassandra");
         KEYSPACE_NAME = System.getProperty("keyspace.name", "jaeger_v1_dc1");
-        QUERY = System.getProperty("query", "SELECT COUNT(*) FROM traces");
-        logger.info("Running with custer.ip [" + CLUSTER_IP + "] Keyspace [" + KEYSPACE_NAME + "] Query [" + QUERY + "]");
+        logger.info("Running with custer.ip [" + CLUSTER_IP + "] Keyspace [" + KEYSPACE_NAME + "]");
     }
 
     @Before
@@ -76,10 +91,17 @@ public class ValidateTracesIT {
      */
     private long getAggregateValue(Session session, String query) {
         ResultSet result = session.execute(query);
-        Row one = result.one();
-        BigInteger stupid = one.getVarint(0);
-        logger.info("Query [" + query + "] returned [" + stupid.longValue() + "]");
-        return stupid.longValue();
+
+        String firstRowValue = result.one().toString();
+        // In a non-stupid world. Cassandra would be able to convert its own bigint type to a java BigInteger
+        // without having to manually load codecs.  For now we will go with this hacky, but simpler solution
+        // This will return "Row[nnnn]"  So we need to chop of Row[ and the tailing ]
+        String start = firstRowValue.substring(4);
+        String finalValue = start.substring(0, start.length() - 1);
+        long aggregate = new Long(finalValue);
+
+        logger.info("Query [" + query + "] returned [" + aggregate + "]");
+        return aggregate;
     }
 
 
