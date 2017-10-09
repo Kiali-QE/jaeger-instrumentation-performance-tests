@@ -63,15 +63,15 @@ public class ValidateTracesIT {
     public void testCountTraces()  throws IOException {
         Session session = cluster.connect(KEYSPACE_NAME);
         long minStartTime = getAggregateValue(session, "select min(start_time) from traces ALLOW FILTERING");
-        long maxtartTime = getAggregateValue(session, "select max(start_time) from traces ALLOW FILTERING");
-        logger.info("MIN " + minStartTime + " MAX " + maxtartTime);
+        long maxStartTime = getAggregateValue(session, "select max(start_time) from traces ALLOW FILTERING");
+        logger.info("MIN " + minStartTime + " MAX " + maxStartTime + " DIFF " + (maxStartTime - minStartTime)/1000);
 
         long totalTraceCount = 0;
         long startTime = minStartTime;
-        while (startTime <= maxtartTime) {
+        while (startTime <= maxStartTime) {
             String query = "select count(*) from traces where  start_time=" + startTime + " ALLOW FILTERING;";
             long traceCountForMs = getAggregateValue(session, query);
-            logger.info("AT " + startTime + " got " + traceCountForMs);
+            //logger.info("AT " + startTime + " got " + traceCountForMs);
             startTime +=1000;  // TODO confirm we only store down to ms
             totalTraceCount += traceCountForMs;
         }
