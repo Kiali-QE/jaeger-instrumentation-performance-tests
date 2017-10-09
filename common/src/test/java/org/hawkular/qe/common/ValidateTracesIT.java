@@ -69,10 +69,13 @@ public class ValidateTracesIT {
         long totalTraceCount = 0;
         long startTime = minStartTime;
         while (startTime <= maxStartTime) {
-            String query = "select count(*) from traces where  start_time=" + startTime + " ALLOW FILTERING;";
+            // select count(*) from traces where start_time >=1507537295087000 AND start_time <=1507537310582000 allow filtering;
+            long endTime = startTime + 1000000;
+            //String query = "select count(*) from traces where  start_time=" + startTime + " ALLOW FILTERING;";
+            String query = "select count(*) from traces where  start_time>=" + startTime + " AND start_time <= " + endTime + " ALLOW FILTERING;";
             long traceCountForMs = getAggregateValue(session, query);
             //logger.info("AT " + startTime + " got " + traceCountForMs);
-            startTime +=1000;  // TODO confirm we only store down to ms
+            startTime +=1000000;  // TODO confirm we only store down to ms
             totalTraceCount += traceCountForMs;
         }
 
