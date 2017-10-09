@@ -80,9 +80,9 @@ public class ValidateTracesIT {
         long interval = 1_000_000L;  // Trace start_time is in microseconds, so this should get 1 sec at a time.
         while (startTime <= (maxStartTime + 1)) {
             long endTime = startTime + interval;
-            String query = "select count(*) from traces where  start_time >" + startTime + " AND start_time < " + endTime + " ALLOW FILTERING;";
+            String query = "select count(*) from traces where  start_time >=" + startTime + " AND start_time <" + endTime + " ALLOW FILTERING;";
             long currentTraceCount = getAggregateValue(session, query);
-            startTime +=interval;
+            startTime = endTime;
             totalTraceCount += currentTraceCount;
         }
 
