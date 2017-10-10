@@ -25,9 +25,11 @@ import javax.inject.Singleton;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.logging.Logger;
 
 @WebListener
 public class TracingContextListener implements ServletContextListener {
+    private static Logger logger = Logger.getLogger(TracingContextListener.class.getName());
 
     @Inject
     private io.opentracing.Tracer tracer;
@@ -45,7 +47,7 @@ public class TracingContextListener implements ServletContextListener {
     public static io.opentracing.Tracer jaegerTracer() {
         Tracer tracer = org.hawkular.qe.common.TracerUtil.jaegerTracer();
 
-        System.out.println(">>>>>> Returning tracer " + tracer.toString());
+        logger.info(">>>>>> Returning tracer " + tracer.toString());
         return tracer;
     }
 }
