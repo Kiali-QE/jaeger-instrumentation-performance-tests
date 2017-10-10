@@ -16,4 +16,4 @@ spec:
         command:
         - "/go/bin/agent-linux"
         - "--collector.host-port=jaeger-collector.jaeger-infra.svc:14267"
-        - "--processor.jaeger-binary.server-queue-size=1000000"
+        - " --processor.jaeger-binary.server-queue-size=1000000"
