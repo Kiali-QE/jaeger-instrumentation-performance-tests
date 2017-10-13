@@ -76,7 +76,7 @@ public class ValidateTracesIT {
         result.iterator()
                 .forEachRemaining(consumer);
         int totalTraceCount = consumer.getRowCount();
-        logger.info(">>>> GOT " + totalTraceCount + "rows");
+        logger.info(">>>> GOT " + totalTraceCount + " rows");
 
         // FIXME At some point we need to pass in the expected trace count.  In the short term write it to a file.  Then
         // We can have the JenkinsFIle add it to the description of the job
@@ -105,6 +105,7 @@ public class ValidateTracesIT {
 class RowCountingConsumer implements Consumer<Row> {
     AtomicInteger rowCount = new AtomicInteger(0);
 
+    // TODO maintain separate counts based on operation name
     @Override
     public void accept(Row r) {
         rowCount.getAndIncrement();
