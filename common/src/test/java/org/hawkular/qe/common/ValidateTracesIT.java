@@ -29,15 +29,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import static org.junit.Assert.assertEquals;
+
 public class ValidateTracesIT {
     private static Map<String, String> envs = System.getenv();
 
+    private static final Integer ITERATIONS = new Integer(envs.getOrDefault("ITERATIONS", "100"));
+    private static final Integer JMETER_CLIENT_COUNT = new Integer(envs.getOrDefault("JMETER_CLIENT_COUNT", "100"));
+    private static int EXPECTED_TRACES = ITERATIONS * JMETER_CLIENT_COUNT * 2;
+
     private static String CLUSTER_IP;
     private static String KEYSPACE_NAME;
+    private Cluster cluster;
 
     private static Logger logger = Logger.getLogger(ValidateTracesIT.class.getName());
-
-    private Cluster cluster;
 
     @BeforeClass
     public static void beforeClass() {
@@ -59,28 +64,50 @@ public class ValidateTracesIT {
     }
 
     /**
-     * At present this is not really a test, but will count the number of traces in Jaeger's Cassandra database and
-     * then write the result to a text file, which the Jenkinsfile will then use to report the result.  In the future
-     * the expected count could be passed in and the test could run against that.
+     * Try to confirm that the expected number of traces was created.  At this time we need to loop as it takes
+     * considerably longer for the traces to get written to Cassandra than it does to create them.
      *
      * NOTE: select count(*) in Cassandra will often time out as it considers that an inefficient operation.  It will
      * however, happily permit us to do select *, so that is the hackerific workaround here.
      * @throws IOException
      */
     @Test
-    public void testCountTraces()  throws IOException {
+    public void testCountTraces()  throws Exception {
+        Session cassandraSession = getCassandraSession();
+        int previousTraceCount = -1;
+        int actualTraceCount = countTracesInCassandra(cassandraSession);
+        int startTraceCount = actualTraceCount;
+        int iterations = 0;
+        while (actualTraceCount < EXPECTED_TRACES && previousTraceCount < actualTraceCount) {
+            logger.info("FOUND " + actualTraceCount + " traces in Cassandra");
+            Thread.sleep(5000);
+            previousTraceCount = actualTraceCount;
+            actualTraceCount = countTracesInCassandra(cassandraSession);
+            iterations++;
+        }
+
+        logger.info("FOUND " + actualTraceCount + " traces in Cassandra after " + iterations + " iterations, starting with " + startTraceCount);
+        Files.write(Paths.get("traceCount.txt"), Long.toString(actualTraceCount).getBytes(), StandardOpenOption.CREATE);
+        assertEquals("Did not find expected number of traces", EXPECTED_TRACES, actualTraceCount);
+    }
+
+    private Session getCassandraSession() {
+        Cluster.Builder builder = Cluster.builder();
+        builder.addContactPoint(CLUSTER_IP);
+        Cluster cluster = builder.build();
         Session session = cluster.connect(KEYSPACE_NAME);
 
+        return session;
+    }
+
+    private int countTracesInCassandra(Session session) {
         ResultSet result = session.execute("select * from traces");
         RowCountingConsumer consumer = new RowCountingConsumer();
         result.iterator()
                 .forEachRemaining(consumer);
         int totalTraceCount = consumer.getRowCount();
-        logger.info(">>>> GOT " + totalTraceCount + " rows");
 
-        // FIXME At some point we need to pass in the expected trace count.  In the short term write it to a file.  Then
-        // We can have the JenkinsFIle add it to the description of the job
-        Files.write(Paths.get("traceCount.txt"), Long.toString(totalTraceCount).getBytes(), StandardOpenOption.CREATE);
+        return totalTraceCount;
     }
 
 
@@ -105,7 +132,6 @@ public class ValidateTracesIT {
 class RowCountingConsumer implements Consumer<Row> {
     AtomicInteger rowCount = new AtomicInteger(0);
 
-    // TODO maintain separate counts based on operation name
     @Override
     public void accept(Row r) {
         rowCount.getAndIncrement();
