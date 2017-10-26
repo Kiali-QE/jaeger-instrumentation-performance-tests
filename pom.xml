@@ -31,7 +31,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>jaeger-performance-tests</test.service.name>
     <user.agent.or.collector>AGENT</user.agent.or.collector>
-    <version.maven.plugin.verxion>2.5</version.maven.plugin.verxion>
+    <version.maven.plugin.version>2.5</version.maven.plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -136,7 +136,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>${version.maven.plugin.verxion}</version>
+        <version>${version.maven.plugin.version}</version>
         <reportSets>
           <reportSet>
             <reports>
