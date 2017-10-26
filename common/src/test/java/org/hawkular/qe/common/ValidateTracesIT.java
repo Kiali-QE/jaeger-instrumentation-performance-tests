@@ -36,7 +36,7 @@ public class ValidateTracesIT {
 
     private static final Integer ITERATIONS = new Integer(envs.getOrDefault("ITERATIONS", "100"));
     private static final Integer JMETER_CLIENT_COUNT = new Integer(envs.getOrDefault("JMETER_CLIENT_COUNT", "100"));
-    private static int EXPECTED_TRACES = ITERATIONS * JMETER_CLIENT_COUNT * 2;
+    private static int EXPECTED_TRACES = ITERATIONS * JMETER_CLIENT_COUNT * 3;
 
     private static String CLUSTER_IP;
     private static String KEYSPACE_NAME;
