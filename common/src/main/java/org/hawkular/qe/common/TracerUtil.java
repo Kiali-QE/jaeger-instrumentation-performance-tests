@@ -19,6 +19,8 @@ package org.hawkular.qe.common;
 import com.uber.jaeger.metrics.Metrics;
 import com.uber.jaeger.metrics.NullStatsReporter;
 import com.uber.jaeger.metrics.StatsFactoryImpl;
+import com.uber.jaeger.reporters.CompositeReporter;
+import com.uber.jaeger.reporters.LoggingReporter;
 import com.uber.jaeger.reporters.RemoteReporter;
 import com.uber.jaeger.reporters.Reporter;
 import com.uber.jaeger.samplers.ProbabilisticSampler;
@@ -28,9 +30,10 @@ import com.uber.jaeger.senders.Sender;
 import com.uber.jaeger.senders.UdpSender;
 import io.opentracing.NoopTracerFactory;
 import io.opentracing.Tracer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class TracerUtil {
     private static final Map<String, String> envs = System.getenv();
@@ -46,12 +49,14 @@ public class TracerUtil {
     private static final String USE_AGENT_OR_COLLECTOR = envs.getOrDefault("USE_AGENT_OR_COLLECTOR", "AGENT");
     private static final String TRACER_TYPE = envs.getOrDefault("TRACER_TYPE", "jaeger");
     private static final String TEST_SERVICE_NAME = envs.getOrDefault("TEST_SERVICE_NAME", "vertx-opentracing-demo");
+    private static final String USE_LOGGING_REPORTER = envs.getOrDefault("USE_LOGGING_REPORTER", "false");
 
-    private static final Logger logger = Logger.getLogger(TracerUtil.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(TracerUtil.class.getName());
 
     public static Tracer jaegerTracer() {
         Tracer tracer;
         Sender sender;
+        CompositeReporter compositeReporter;
 
         if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
             if (USE_AGENT_OR_COLLECTOR.equalsIgnoreCase("agent")) {
@@ -67,12 +72,21 @@ public class TracerUtil {
                         "] Service Name [" + TEST_SERVICE_NAME + "] Sampling rate [" + JAEGER_SAMPLING_RATE
                         + "] Max queue size: [" + JAEGER_MAX_QUEUE_SIZE + "]");
             }
-            
+
             Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
-            Reporter reporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
+            Reporter remoteReporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
+            if (USE_LOGGING_REPORTER.equalsIgnoreCase("true")) {
+                Reporter loggingRepoter = new LoggingReporter(logger);
+                compositeReporter = new CompositeReporter(remoteReporter, loggingRepoter);
+            } else {
+                compositeReporter = new CompositeReporter(remoteReporter);
+            }
+
             Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
-            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME, reporter, sampler)
+            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME, compositeReporter, sampler)
                     .build();
+
+            return tracer;
         } else {
             logger.info("Using NOOP Tracer");
             tracer = NoopTracerFactory.create();
