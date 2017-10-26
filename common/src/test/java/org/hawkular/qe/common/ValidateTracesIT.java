@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -85,6 +86,10 @@ public class ValidateTracesIT {
             actualTraceCount = countTracesInCassandra(cassandraSession);
             iterations++;
         }
+
+        // TODO temporary, remove this.  Just trying to verify if the Agent is really dropping things
+        TimeUnit.SECONDS.sleep(30);
+        actualTraceCount = countTracesInCassandra(cassandraSession);
 
         logger.info("FOUND " + actualTraceCount + " traces in Cassandra after " + iterations + " iterations, starting with " + startTraceCount);
         Files.write(Paths.get("traceCount.txt"), Long.toString(actualTraceCount).getBytes(), StandardOpenOption.CREATE);
