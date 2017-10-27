@@ -13,7 +13,7 @@ pipeline {
         string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.jaeger-infra.svc', description: 'Host where the collector is running')   // FIXME
         string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
-        string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '100', description: 'Tracer queue size')
+        string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '300000', description: 'Tracer queue size')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
         string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
         string(name: 'EXAMPLE_PODS', defaultValue: '1', description: 'The number of pods to deploy for the example application')
@@ -72,9 +72,10 @@ pipeline {
                 expression { params.TRACER_TYPE == 'JAEGER'}
             }
             steps {
-                sh 'oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
-                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
-                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
+               /* TODO  use real yml file and update it.  See https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests/issues/37 */
+               sh 'oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f https://raw.githubusercontent.com/kevinearls/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
+               openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
+               openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
             }
         }
         stage('Deploy example application'){
@@ -86,7 +87,7 @@ pipeline {
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false', retryCount:'200'
                 /* Hack to make sure app is started before starting JMeter */
                 sleep 30
-                sh 'curl ${JMETER_URL}:8080/singleSpan'
+                sh 'curl ${JMETER_URL}:8080'
             }
         }
         stage('Run JMeter Test') {
@@ -113,7 +114,6 @@ pipeline {
             steps{
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
                     sh 'rm -f common/traceCount.txt'
-                    sh 'curl ${JMETER_URL}:8080/closeTracer'
                     sh 'mvn --file common/pom.xml -Dcluster.ip=cassandra -Dkeyspace.name=jaeger_v1_dc1 clean integration-test'
                 }
                 script {
