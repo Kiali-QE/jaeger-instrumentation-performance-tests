@@ -22,7 +22,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<test.service.name>jaeger-vert-x-tests</test.service.name>
 		<java.version>1.8</java.version>
-        <opentracing.contrib.vertx.version>0.0.1</opentracing.contrib.vertx.version>
 		<vertx.projectVersion>3.4.2</vertx.projectVersion>
 		<vertx.verticle>org.hawkular.qe.vertx.JaegerPerformanceTestsVerticle</vertx.verticle>
 	</properties>
@@ -48,19 +47,6 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
 		</dependency>
-
-		<!-- Jaeger version -->
-		<dependency>
-			<groupId>com.uber.jaeger</groupId>
-			<artifactId>jaeger-core</artifactId>
-		</dependency>
-
-        <!-- Opentracing dependencies -->
-        <dependency>
-            <groupId>io.opentracing.contrib</groupId>
-            <artifactId>opentracing-vertx-web</artifactId>
-            <version>${opentracing.contrib.vertx.version}</version>
-        </dependency>
 
 		<dependency>
 			<groupId>org.hawkular.qe.common</groupId>

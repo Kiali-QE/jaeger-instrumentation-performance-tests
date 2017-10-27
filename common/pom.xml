@@ -79,11 +79,7 @@
             <artifactId>cassandra-driver-core</artifactId>
             <version>${cassandra.driver.core.version}</version>
         </dependency>
-        <!-- Jaeger version -->
-        <dependency>
-            <groupId>com.uber.jaeger</groupId>
-            <artifactId>jaeger-core</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

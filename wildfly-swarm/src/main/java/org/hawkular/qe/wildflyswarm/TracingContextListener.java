@@ -16,9 +16,6 @@
  */
 package org.hawkular.qe.wildflyswarm;
 
-import io.opentracing.Tracer;
-import io.opentracing.util.GlobalTracer;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,23 +28,14 @@ import java.util.logging.Logger;
 public class TracingContextListener implements ServletContextListener {
     private static Logger logger = Logger.getLogger(TracingContextListener.class.getName());
 
-    @Inject
-    private io.opentracing.Tracer tracer;
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        GlobalTracer.register(tracer);
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {}
 
-    @Produces
-    @Singleton
-    public static io.opentracing.Tracer jaegerTracer() {
-        Tracer tracer = org.hawkular.qe.common.TracerUtil.jaegerTracer();
 
-        logger.info(">>>>>> Returning tracer " + tracer.toString());
-        return tracer;
-    }
 }

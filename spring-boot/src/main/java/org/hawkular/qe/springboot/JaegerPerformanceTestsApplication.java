@@ -16,7 +16,7 @@
  */
 package org.hawkular.qe.springboot;
 
-import io.opentracing.Tracer;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -34,13 +34,6 @@ public class JaegerPerformanceTestsApplication {
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder.build();
-	}
-
-	@Bean
-	public io.opentracing.Tracer tracer() {
-        Tracer tracer = org.hawkular.qe.common.TracerUtil.jaegerTracer();
-
-        return tracer;
 	}
 
 	public static void main(String[] args) {

@@ -16,20 +16,6 @@
  */
 package org.hawkular.qe.common;
 
-import com.uber.jaeger.metrics.Metrics;
-import com.uber.jaeger.metrics.NullStatsReporter;
-import com.uber.jaeger.metrics.StatsFactoryImpl;
-import com.uber.jaeger.reporters.CompositeReporter;
-import com.uber.jaeger.reporters.LoggingReporter;
-import com.uber.jaeger.reporters.RemoteReporter;
-import com.uber.jaeger.reporters.Reporter;
-import com.uber.jaeger.samplers.ProbabilisticSampler;
-import com.uber.jaeger.samplers.Sampler;
-import com.uber.jaeger.senders.HttpSender;
-import com.uber.jaeger.senders.Sender;
-import com.uber.jaeger.senders.UdpSender;
-import io.opentracing.NoopTracerFactory;
-import io.opentracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,46 +39,5 @@ public class TracerUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(TracerUtil.class.getName());
 
-    public static Tracer jaegerTracer() {
-        Tracer tracer;
-        Sender sender;
-        CompositeReporter compositeReporter;
-
-        if (TRACER_TYPE.equalsIgnoreCase("jaeger")) {
-            if (USE_AGENT_OR_COLLECTOR.equalsIgnoreCase("agent")) {
-                sender = new UdpSender(JAEGER_AGENT_HOST, JAEGER_UDP_PORT, JAEGER_MAX_PACKET_SIZE);
-                logger.info("Using JAEGER tracer using agent on host [" + JAEGER_AGENT_HOST + "] port [" + JAEGER_UDP_PORT +
-                        "] Service Name [" + TEST_SERVICE_NAME + "] Sampling rate [" + JAEGER_SAMPLING_RATE
-                        + "] Max queue size: [" + JAEGER_MAX_QUEUE_SIZE + "]");
-            } else {
-                // use the collector
-                String httpEndpoint = "http://" + JAEGER_COLLECTOR_HOST + ":" + JAEGER_COLLECTOR_PORT + "/api/traces";
-                sender = new HttpSender(httpEndpoint);
-                logger.info("Using JAEGER tracer using collector on host [" + JAEGER_COLLECTOR_HOST + "] port [" + JAEGER_COLLECTOR_PORT +
-                        "] Service Name [" + TEST_SERVICE_NAME + "] Sampling rate [" + JAEGER_SAMPLING_RATE
-                        + "] Max queue size: [" + JAEGER_MAX_QUEUE_SIZE + "]");
-            }
-
-            Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
-            Reporter remoteReporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
-            if (USE_LOGGING_REPORTER.equalsIgnoreCase("true")) {
-                Reporter loggingRepoter = new LoggingReporter(logger);
-                compositeReporter = new CompositeReporter(remoteReporter, loggingRepoter);
-            } else {
-                compositeReporter = new CompositeReporter(remoteReporter);
-            }
-
-            Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
-            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME, compositeReporter, sampler)
-                    .build();
-
-            return tracer;
-        } else {
-            logger.info("Using NOOP Tracer");
-            tracer = NoopTracerFactory.create();
-        }
-
-        return tracer;
-    }
 
 }

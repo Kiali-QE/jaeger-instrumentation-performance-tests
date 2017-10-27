@@ -34,16 +34,6 @@
     <version.maven.plugin.version>2.5</version.maven.plugin.version>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.uber.jaeger</groupId>
-        <artifactId>jaeger-core</artifactId>
-        <version>${jaeger.core.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <modules>
     <module>wildfly-swarm</module>
     <module>spring-boot</module>

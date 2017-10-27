@@ -17,7 +17,6 @@
 
   <properties>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <opentracing.jaxrs.version>0.0.9</opentracing.jaxrs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>wildfly-swarm-demo</test.service.name>
     <wildfly.swarm.version>2017.8.1</wildfly.swarm.version>
@@ -73,16 +72,6 @@
     </dependency><dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-jaxrs2</artifactId>
-      <version>${opentracing.jaxrs.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.uber.jaeger</groupId>
-      <artifactId>jaeger-core</artifactId>
     </dependency>
 
     <dependency>

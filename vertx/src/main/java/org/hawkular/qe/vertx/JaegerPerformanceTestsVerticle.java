@@ -16,8 +16,6 @@
  */
 package org.hawkular.qe.vertx;
 
-import io.opentracing.Tracer;
-import io.opentracing.contrib.vertx.ext.web.TracingHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
@@ -28,26 +26,19 @@ import org.hawkular.qe.vertx.util.BackendService;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import static org.hawkular.qe.common.TracerUtil.jaegerTracer;
-
 public class JaegerPerformanceTestsVerticle extends AbstractVerticle {
     private static Logger logger = Logger.getLogger(JaegerPerformanceTestsVerticle.class.getName());
     private BackendService backendService;
 
     @Override
     public void start() {
-        Tracer tracer = jaegerTracer();
-        TracingHandler tracingHandler = new TracingHandler(tracer);
-        backendService = new BackendService(tracer, tracingHandler);
+        backendService = new BackendService();
 
         Router router = Router.router(vertx);
         router.get("/").handler(this::singleSpan);
         router.get("/singleSpan").handler(this::singleSpan);
         router.get("/spanWithChild").handler(this::spanWithChild);
 
-        router.route()
-                .order(-1).handler(tracingHandler)
-                .failureHandler(tracingHandler);
 
         vertx.createHttpServer()
                 .requestHandler(router::accept)
