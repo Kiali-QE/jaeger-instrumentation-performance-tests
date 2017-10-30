@@ -19,7 +19,6 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<opentracing.spring.cloud.version>0.0.4</opentracing.spring.cloud.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<opentracing.spring.cloud.version>0.0.2</opentracing.spring.cloud.version>
