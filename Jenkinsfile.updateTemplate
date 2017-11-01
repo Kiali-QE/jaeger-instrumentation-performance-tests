@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Download and update template') {
+            steps {
+                sh '''
+                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml -o jaeger-production-template.yml
+                    cp jaeger-production-template.yml original.yml
+                    sed -i "s;parameters:.*$;\0\n- description: Queue size parameter for the collector\n  displayName: Jaeger Collector Queue Size\n  name: COLLECTOR_QUEUE_SIZE\n  required: false\n  value: "300000";g" jaeger-production-template.yml
+                    sed -i '0,/.*- \"--cassandra.keyspace=${KEYSPACE}".*$/s//\0\n          - "--collector.queue-size=${COLLECTOR_QUEUE_SIZE}"/' jaeger-production-template.yml
+                    diff -w original.yml jaeger-production-template.yml
+                   '''
+            }
+        }
+    }
+}
