@@ -30,7 +30,7 @@ The results shown below are throughput in operations per seconds (i.e. a GET on 
 2 operations per iteration which create 3 traces * 100 clients * 10000 iterations for a total of 3,000,000 traces. 
 
 | App/Tracer|NONE| NOOP| JAEGER Collector 1.0 | JAEGER Agent 1.0 |
-| ------------- | -----:|-----:|-----:|-----:|-----:|
+| ------------- | -----:|-----:|-----:|-----:|
 | Wildfly-swarm|14068,70|13315,60|7388,0|10536,3|
 | Spring Boot|11832,9|9829,5|9163,0|8953.4| 
 | Vert-X|9327,5|10066,40|10775,3|8513.2|
