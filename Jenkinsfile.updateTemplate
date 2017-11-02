@@ -1,15 +1,26 @@
 pipeline {
     agent any
 
+    parameters {
+
+        string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
+        string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
+        string(name: 'KEYSPACE_NAME', defaultValue: 'jaeger_v1_dc1', description: 'Name of the Jaeger keyspace in Cassandra')
+
+    }
     stages {
         stage('Download and update template') {
             steps {
+                script {
+                    git 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
+                }
+                 /* Before using the template we need to add '--collector.queue-size=${COLLECTOR_QUEUE_SIZE}' to the collector startup,
+                                  as well as defining the 'COLLECTOR_QUEUE_SIZE' parameter */
                 sh '''
                     curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml -o jaeger-production-template.yml
-                    cp jaeger-production-template.yml original.yml
-                    sed -i "s;parameters:.*$;\0\n- description: Queue size parameter for the collector\n  displayName: Jaeger Collector Queue Size\n  name: COLLECTOR_QUEUE_SIZE\n  required: false\n  value: "300000";g" jaeger-production-template.yml
-                    sed -i '0,/.*- \"--cassandra.keyspace=${KEYSPACE}".*$/s//\0\n          - "--collector.queue-size=${COLLECTOR_QUEUE_SIZE}"/' jaeger-production-template.yml
-                    diff -w original.yml jaeger-production-template.yml
+                    ./updateTemplate.sh
+                    oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
+
                    '''
             }
         }

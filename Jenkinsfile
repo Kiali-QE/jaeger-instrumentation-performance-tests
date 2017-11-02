@@ -14,6 +14,7 @@ pipeline {
         string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
         string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '300000', description: 'Tracer queue size')
+        string(name: 'KEYSPACE_NAME', defaultValue: 'jaeger_v1_dc1', description: 'Name of the Jaeger keyspace in Cassandra')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
         string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
         string(name: 'EXAMPLE_PODS', defaultValue: '1', description: 'The number of pods to deploy for the example application')
@@ -72,8 +73,13 @@ pipeline {
                 expression { params.TRACER_TYPE == 'JAEGER'}
             }
             steps {
-               /* TODO  use real yml file and update it.  See https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests/issues/37 */
-               sh 'oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f https://raw.githubusercontent.com/kevinearls/jaeger-openshift/master/production/jaeger-production-template.yml | oc create -n jaeger-infra -f -'
+               /* Before using the template we need to add '--collector.queue-size=${COLLECTOR_QUEUE_SIZE}' to the collector startup,
+                  as well as defining the 'COLLECTOR_QUEUE_SIZE' parameter */
+                sh '''
+                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml -o jaeger-production-template.yml
+                    ./updateTemplate.sh
+                    oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
+                '''
                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
             }
