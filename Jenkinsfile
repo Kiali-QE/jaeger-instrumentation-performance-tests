@@ -49,12 +49,11 @@ pipeline {
             steps {
                 deleteDir()
                 script {
-                    /*if (params.TRACER_TYPE != 'NONE') {
+                    if (params.TRACER_TYPE != 'NONE') {
                         git 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
                     } else {
                         git branch: 'no-tracing', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
-                    }*/
-                    git branch: 'split-backing-storage-types', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
+                    }
                 }
                 /* We need to build here so stuff in common wil be available */
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
