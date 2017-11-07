@@ -77,9 +77,8 @@ pipeline {
                /* Before using the template we need to add '--collector.queue-size=${COLLECTOR_QUEUE_SIZE}' to the collector startup,
                   as well as defining the 'COLLECTOR_QUEUE_SIZE' parameter                  */
                 sh '''
-                    oc create -f https://raw.githubusercontent.com/jpkrohling/jaeger-openshift/JPK-SplitBackingStorageTypes/production/cassandra.yml
-                    curl https://raw.githubusercontent.com/jpkrohling/jaeger-openshift/JPK-SplitBackingStorageTypes/production/jaeger-production-template.yml -o jaeger-production-template.yml
-                    ls -alF
+                    oc create -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/cassandra.yml
+                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml -o jaeger-production-template.yml
                     ./updateTemplate.sh
                     oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
                 '''
