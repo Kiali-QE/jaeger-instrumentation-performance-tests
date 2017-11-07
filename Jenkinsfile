@@ -49,11 +49,12 @@ pipeline {
             steps {
                 deleteDir()
                 script {
-                    if (params.TRACER_TYPE != 'NONE') {
+                    /*if (params.TRACER_TYPE != 'NONE') {
                         git 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
                     } else {
                         git branch: 'no-tracing', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
-                    }
+                    }*/
+                    git branch: 'split-backing-storage-types', url: 'https://github.com/Hawkular-QE/jaeger-instrumentation-performance-tests.git'
                 }
                 /* We need to build here so stuff in common wil be available */
                 withEnv(["JAVA_HOME=${ tool 'jdk8' }", "PATH+MAVEN=${tool 'maven-3.5.0'}/bin:${env.JAVA_HOME}/bin"]) {
@@ -74,9 +75,11 @@ pipeline {
             }
             steps {
                /* Before using the template we need to add '--collector.queue-size=${COLLECTOR_QUEUE_SIZE}' to the collector startup,
-                  as well as defining the 'COLLECTOR_QUEUE_SIZE' parameter */
+                  as well as defining the 'COLLECTOR_QUEUE_SIZE' parameter                  */
                 sh '''
-                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml -o jaeger-production-template.yml
+                    oc create -f https://raw.githubusercontent.com/jpkrohling/jaeger-openshift/JPK-SplitBackingStorageTypes/production/cassandra.yml
+                    curl https://raw.githubusercontent.com/jpkrohling/jaeger-openshift/JPK-SplitBackingStorageTypes/production/jaeger-production-template.yml -o jaeger-production-template.yml
+                    ls -alF
                     ./updateTemplate.sh
                     oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
                 '''
