@@ -8,7 +8,7 @@ pipeline {
     parameters {
         choice(choices: 'JAEGER\nNOOP\nNONE', description: 'Which tracer to use', name: 'TRACER_TYPE')
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
-        choice(choices: 'AGENT\nCOLLECTOR', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
+        choice(choices: 'COLLECTOR\nAGENT', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
         string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.jaeger-infra.svc', description: 'Host where the collector is running')   // FIXME
         string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
