@@ -13,7 +13,7 @@
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.collector.host>jaeger-collector.jaeger-infra.svc</jaeger.collector.host>
     <jaeger.collector.port>14268</jaeger.collector.port>
-    <jaeger.core.version>0.21.0</jaeger.core.version>
+    <jaeger.core.version>0.22.0-RC2</jaeger.core.version>
     <jaeger.max.queue.size>100</jaeger.max.queue.size>
     <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
     <jmeter.clients>100</jmeter.clients>
