@@ -34,8 +34,8 @@ Minishift run with `minishift start --cpus=6 --memory=12288 --disk-size=80GB`
 
 ## Results
 
-The results shown below are throughput reported by JMeter in operations per second (i.e. a GET on an endpoint = 1 operation.)  
-For this test run there are 2 operations per iteration for a total of 2,000,000 opertions.  The `/singleSpan` endpoing 
+The results shown below are throughput as reported by JMeter in operations per second (i.e. a GET on an endpoint = 1 operation.)  
+For this test run there are 2 operations per iteration for a total of 2,000,000 opertions.  The `/singleSpan` endpoint 
 creates one trace, while the `/spanWithChild` endpoint creates 2 traces, so each test run creates a total of 3,000,000 traces. 
 
 | App/Tracer|NONE| NOOP| JAEGER Collector Sampling 1.0 |JAEGER Collector(3 Pods) Sampling 1.0 | JAEGER Collector(6 Pods) Sampling 1.0 |
