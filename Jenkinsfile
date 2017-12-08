@@ -18,6 +18,7 @@ pipeline {
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
         string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
         string(name: 'EXAMPLE_PODS', defaultValue: '1', description: 'The number of pods to deploy for the example application')
+        string(name: 'COLLECTOR_PODS', defaultValue: '1', description: 'The number of pods to deploy for the Jaeger Collector')
         string(name: 'RAMPUP', defaultValue: '0', description: 'The number of seconds to take to start all jmeter clients')
         string(name: 'DELAY1', defaultValue: '1', description: 'delay after hitting /singleSpan')
         string(name: 'DELAY2', defaultValue: '1', description: 'delay after hitting /spanWithChild')
@@ -80,7 +81,7 @@ pipeline {
                     oc create --filename cassandra.yml
                     curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml --output jaeger-production-template.yml
                     ./updateTemplate.sh
-                    oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
+                    oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -pCOLLECTOR_PODS=${COLLECTOR_PODS} -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
                 '''
                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
