@@ -34,16 +34,15 @@ Minishift run with `minishift start --cpus=6 --memory=12288 --disk-size=80GB`
 
 ## Results
 
-The results shown below are throughput in operations per second (i.e. a GET on an endpoint = 1 operation.)  For this test run there are 
-2 operations per iteration which create 3 traces * 100 clients * 10000 iterations for a total of 3,000,000 traces. 
+The results shown below are throughput reported by JMeter in operations per second (i.e. a GET on an endpoint = 1 operation.)  
+For this test run there are 2 operations per iteration for a total of 2,000,000 opertions.  The `/singleSpan` endpoing 
+creates one trace, while the `/spanWithChild` endpoint creates 2 traces, so each test run creates a total of 3,000,000 traces. 
 
-| App/Tracer|NONE| NOOP| JAEGER Collector 1.0 |JAEGER Collector(3 Pods) 1.0 | JAEGER Collector(6 Pods) 1.0 |
+| App/Tracer|NONE| NOOP| JAEGER Collector Sampling 1.0 |JAEGER Collector(3 Pods) Sampling 1.0 | JAEGER Collector(6 Pods) Sampling 1.0 |
 | ------------- | -----:|-----:|-----:|-----:|-----:|
 | Wildfly-swarm| 9588,2 | 9333,6 | 3427,0 | 3252,4 | 3024,4 | 
 | Spring Boot| 6050,3 | 5674,9 | 2294,4 | 2223,6 | 2009,8 |
 | Vert-X| 13409,3 | 13002,2 | 5426,5 | 5467,0 | 4589,2 | 
-
-`All tests with the JAEGER Collector used a sampling rate of 1.0`
 
 ## Evaluating the results
 It's a bit difficult to give a simple answer on the cost of instrumentation as there are many factors to consider.  At
@@ -57,7 +56,7 @@ seconds to the time required per operation.
 ## A note on consistency
 These tests were run on a standalone machine running only minishift, one instance of a Chrome browser with only one
 tab open, and one shell window.  (The laptop was connected to my home network).  To get an insight into getting consistent
-results, I first ran the test using the wildfly-swarm example and 1 collector instance.  I got the following results for
+results, I first ran the test five times using the wildfly-swarm example and 1 collector instance.  I got the following results for
 throughput:
 
 + 3069,0
