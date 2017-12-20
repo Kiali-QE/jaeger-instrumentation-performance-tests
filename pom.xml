@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <fabric8.maven.plugin.version>3.5.31</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.33</fabric8.maven.plugin.version>
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.collector.host>jaeger-collector.jaeger-infra.svc</jaeger.collector.host>
     <jaeger.collector.port>14268</jaeger.collector.port>
