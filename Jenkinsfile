@@ -10,7 +10,7 @@ pipeline {
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
         choice(choices: 'COLLECTOR\nAGENT', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
-        string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.jaeger-infra.svc', description: 'Host where the collector is running')   // FIXME
+        string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.${PROJECT_NAME}.svc', description: 'Host where the collector is running')   // FIXME
         string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
         string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '300000', description: 'Tracer queue size')
@@ -27,7 +27,7 @@ pipeline {
     }
     environment {
         testTargetApp = 'jaeger-performance-' + "${TARGET_APP}" + '-app'
-        JMETER_URL = "${testTargetApp}" + ".jaeger-infra.svc"
+        JMETER_URL = "${testTargetApp}" + ".${PROJECT_NAME}.svc"
     }
     stages {
         stage('Set name and description') {
@@ -81,7 +81,7 @@ pipeline {
                     oc create --filename cassandra.yml
                     curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml --output jaeger-production-template.yml
                     ./updateTemplate.sh
-                    oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -pCOLLECTOR_PODS=${COLLECTOR_PODS} -f jaeger-production-template.yml  | oc create -n jaeger-infra -f -
+                    oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -pCOLLECTOR_PODS=${COLLECTOR_PODS} -f jaeger-production-template.yml  | oc create -n ${PROJECT_NAME} -f -
                 '''
                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-query', verbose: 'false'
                openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: 'jaeger-collector', verbose: 'false'
@@ -102,7 +102,6 @@ pipeline {
         stage('Run JMeter Test') {
             steps{
                 sh '''
-                    /* Install JMeter if needed. */
                     if [ ! -e ~/tools/apache-jmeter-3.3/bin/jmeter ]; then
                         cd ~/tools
                         curl http://apache.mindstudios.com//jmeter/binaries/apache-jmeter-3.3.tgz --output apache-jmeter-3.3.tgz
