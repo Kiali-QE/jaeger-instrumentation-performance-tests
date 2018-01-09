@@ -102,6 +102,15 @@ pipeline {
         stage('Run JMeter Test') {
             steps{
                 sh '''
+                    /* Install JMeter if needed. */
+                    if [ ! -e ~/tools/apache-jmeter-3.3/bin/jmeter ]; then
+                        cd ~/tools
+                        curl http://apache.mindstudios.com//jmeter/binaries/apache-jmeter-3.3.tgz --output apache-jmeter-3.3.tgz
+                        gunzip apache-jmeter-3.3.tgz
+                        tar -xvf apache-jmeter-3.3.tar
+                        rm apache-jmeter-3.3.tar
+                        ls -alF
+                    fi
 
                     rm -rf log.txt reports
                     export PORT=8080
