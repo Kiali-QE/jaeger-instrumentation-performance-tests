@@ -20,6 +20,10 @@
 
     <properties>
         <cassandra.driver.core.version>3.3.2</cassandra.driver.core.version>
+        <elasticsearch.version>6.0.0-rc2</elasticsearch.version>  <!-- TODO update to 6.10.0 once it's in maven central -->
+        <glassfish.jersey.client.version>2.23.2</glassfish.jersey.client.version>
+        <jackson.version>2.9.2</jackson.version>
+        <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <maven.failsafe.plugin.version>2.20.1</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>2.20.1</maven.surefire.plugin.version>
         <slf4j.version>1.8.0-beta0</slf4j.version>
@@ -85,9 +89,34 @@
             <artifactId>jaeger-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-client</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+        </dependency>
+        <!-- For JSON -->
+        <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax.ws.rs.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${glassfish.jersey.client.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 

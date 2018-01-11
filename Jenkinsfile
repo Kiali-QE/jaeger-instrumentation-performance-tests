@@ -9,6 +9,7 @@ pipeline {
         choice(choices: 'JAEGER\nNOOP\nNONE', description: 'Which tracer to use', name: 'TRACER_TYPE')
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
         choice(choices: 'COLLECTOR\nAGENT', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
+        choice(choices: 'cassandra\nelasticSearch', description: 'Span Storage', name: 'SPAN_STORAGE_TYPE')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
         string(name: 'JAEGER_COLLECTOR_HOST', defaultValue: 'jaeger-collector.${PROJECT_NAME}.svc', description: 'Host where the collector is running')   // FIXME
         string(name: 'JAEGER_COLLECTOR_PORT', defaultValue: '14268', description: 'Collector port')
@@ -27,7 +28,6 @@ pipeline {
     }
     environment {
         testTargetApp = 'jaeger-performance-' + "${TARGET_APP}" + '-app'
-        JMETER_URL = "${testTargetApp}" + ".${PROJECT_NAME}.svc"
     }
     stages {
         stage('Set name and description') {
@@ -69,6 +69,28 @@ pipeline {
                 }
             }
         }
+        stage('deploy Cassandra') {
+            when {
+                expression { params.SPAN_STORAGE_TYPE == 'cassandra'}
+            }
+            steps {
+                sh '''
+                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/cassandra.yml --output cassandra.yml
+                    oc create --filename cassandra.yml
+                '''
+            }
+        }
+        stage('deploy ElasticSearch') {
+            when {
+                expression { params.SPAN_STORAGE_TYPE == 'elasticSearch'}
+            }
+            steps {
+                sh '''
+                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/elasticsearch.yml --output elasticsearch.yml
+                    oc create --filename elasticsearch.yml
+                '''
+            }
+        }
         stage('deploy Jaeger') {
             when {
                 expression { params.TRACER_TYPE == 'JAEGER'}
@@ -77,8 +99,6 @@ pipeline {
                /* Before using the template we need to add '--collector.queue-size=${COLLECTOR_QUEUE_SIZE}' to the collector startup,
                   as well as defining the 'COLLECTOR_QUEUE_SIZE' parameter                  */
                 sh '''
-                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/cassandra.yml --output cassandra.yml
-                    oc create --filename cassandra.yml
                     curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml --output jaeger-production-template.yml
                     ./updateTemplate.sh
                     oc process -pCOLLECTOR_QUEUE_SIZE="$(($ITERATIONS * $JMETER_CLIENT_COUNT * 3))" -pCOLLECTOR_PODS=${COLLECTOR_PODS} -f jaeger-production-template.yml  | oc create -n ${PROJECT_NAME} -f -
@@ -95,14 +115,14 @@ pipeline {
                 }
                 openshiftVerifyService apiURL: '', authToken: '', namespace: '', svcName: env.testTargetApp, verbose: 'false', retryCount:'200'
                 /* Hack to make sure app is started before starting JMeter */
-                sleep 30
-                sh 'curl ${JMETER_URL}:8080'
+                sleep 90
+                sh 'curl ${testTargetApp}"."${PROJECT_NAME}".svc:8080"'
             }
         }
         stage('Run JMeter Test') {
             steps{
                 sh '''
-                    if [ ! -e ~/tools/apache-jmeter-3.3/bin/jmeter ]; then
+                    if [ ! -e /var/lib/jenkins/tools/apache-jmeter-3.3/bin/jmeter ]; then
                         cd ~/tools
                         curl http://apache.mindstudios.com//jmeter/binaries/apache-jmeter-3.3.tgz --output apache-jmeter-3.3.tgz
                         gunzip apache-jmeter-3.3.tgz
@@ -113,7 +133,9 @@ pipeline {
 
                     rm -rf log.txt reports
                     export PORT=8080
+                    export JMETER_URL=${testTargetApp}"."${PROJECT_NAME}".svc"
                     ~/tools/apache-jmeter-3.3/bin/jmeter --nongui --testfile TestPlans/SimpleTracingTest.jmx -JTHREADCOUNT=${JMETER_CLIENT_COUNT} -JITERATIONS=${ITERATIONS} -JRAMPUP=${RAMPUP} -JURL=${JMETER_URL} -JPORT=${PORT} -JDELAY1=${DELAY1} -JDELAY2=${DELAY2} --logfile log.txt --reportatendofloadtests --reportoutputfolder reports
+                    head -20 log.txt
                     '''
                 script {
                     env.THROUGHPUT = sh (returnStdout: true, script: 'grep "summary =" jmeter.log | tail -1 | sed "s/^.*summary = //g" | sed "s/^.*= //g" | sed "s/\\/s.*//g"')
