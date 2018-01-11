@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     currentBuild.displayName = params.TARGET_APP + " " + params.TRACER_TYPE + " " + params.USE_AGENT_OR_COLLECTOR +
-                        " " + params.JMETER_CLIENT_COUNT + " " + params.ITERATIONS + " " + params.JAEGER_SAMPLING_RATE + " QS: "  +
+                         " " + params.SPAN_STORAGE_TYPE + " " + params.JMETER_CLIENT_COUNT + " " + params.ITERATIONS + " " + params.JAEGER_SAMPLING_RATE + " QS: "  +
                         params.JAEGER_MAX_QUEUE_SIZE + " D1: " + params.DELAY1  + " D2: " + params.DELAY2
                     currentBuild.description = currentBuild.displayName
                 }
