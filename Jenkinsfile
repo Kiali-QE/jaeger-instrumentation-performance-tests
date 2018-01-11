@@ -16,6 +16,8 @@ pipeline {
         string(name: 'JAEGER_SAMPLING_RATE', defaultValue: '1.0', description: '0.0 to 1.0 percent of spans to record')
         string(name: 'JAEGER_MAX_QUEUE_SIZE', defaultValue: '300000', description: 'Tracer queue size')
         string(name: 'KEYSPACE_NAME', defaultValue: 'jaeger_v1_dc1', description: 'Name of the Jaeger keyspace in Cassandra')
+        string(name: 'ELASTICSEARCH_HOST', defaultValue: 'jaeger-collector.${PROJECT_NAME}.svc', description: 'ElasticShift host')
+        string(name: 'ELASTICSEARCH_PORT', defaultValue: '9200', description: 'ElasticShift port')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
         string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
         string(name: 'EXAMPLE_PODS', defaultValue: '1', description: 'The number of pods to deploy for the example application')

@@ -43,8 +43,8 @@ import static org.junit.Assert.assertEquals;
 public class ValidateTracesIT {
     private static Map<String, String> envs = System.getenv();
 
-    private static final String ES_HOST = envs.getOrDefault("ES_HOST", "localhost");
-    private static final Integer ES_PORT = new Integer(envs.getOrDefault("ES_PORT", "9200"));
+    private static final String ELASTICSEARCH_HOST = envs.getOrDefault("ELASTICSEARCH_HOST", "elasticsearch");
+    private static final Integer ELASTICSEARCH_PORT = new Integer(envs.getOrDefault("ELASTICSEARCH_PORT", "9200"));
     private static final Integer ITERATIONS = new Integer(envs.getOrDefault("ITERATIONS", "100"));
     private static final String SPAN_STORAGE_TYPE = envs.getOrDefault("SPAN_STORAGE_TYPE", "cassandra");
     private static final Integer JMETER_CLIENT_COUNT = new Integer(envs.getOrDefault("JMETER_CLIENT_COUNT", "100"));
@@ -183,8 +183,8 @@ public class ValidateTracesIT {
 
     private RestClient getESRestClient() {
         return RestClient.builder(
-                new HttpHost(ES_HOST, ES_PORT, "http"),
-                new HttpHost(ES_HOST, ES_PORT +1, "http"))
+                new HttpHost(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT, "http"),
+                new HttpHost(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT +1, "http"))
                 .build();
     }
 
