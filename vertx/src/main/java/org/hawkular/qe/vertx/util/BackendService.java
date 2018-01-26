@@ -16,8 +16,8 @@
  */
 package org.hawkular.qe.vertx.util;
 
-import io.opentracing.ActiveSpan;
-import io.opentracing.SpanContext;
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.vertx.ext.web.TracingHandler;
 import io.vertx.ext.web.RoutingContext;
@@ -35,18 +35,18 @@ public class BackendService {
     }
 
     public void action(RoutingContext routingContext) throws InterruptedException {
-        SpanContext spanContext = tracingHandler.serverSpanContext(routingContext);
-        try (ActiveSpan span = tracer.buildSpan("action").asChildOf(spanContext).startActive()) {
-            anotherAction();
-        }
+        Span span = tracer.buildSpan("action").start();
+        anotherAction();
+        span.finish();
     }
 
     private void anotherAction() {
-        ActiveSpan activeSpan = tracer.activeSpan();
+        Scope scope = tracer.scopeManager().active();
+        Span activeSpan = scope.span();
         if (activeSpan != null) {
             activeSpan.setTag("anotherAction", "data");
         } else {
-            logger.info("tracer.activeSpan returned null");
+            logger.fine("tracer.activeSpan returned null");
         }
     }
 }

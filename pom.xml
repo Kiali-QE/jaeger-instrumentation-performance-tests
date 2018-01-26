@@ -13,7 +13,7 @@
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.collector.host>jaeger-collector.jaeger-infra.svc</jaeger.collector.host>
     <jaeger.collector.port>14268</jaeger.collector.port>
-    <jaeger.core.version>0.22.0-RC2</jaeger.core.version>
+    <jaeger.core.version>0.23.0</jaeger.core.version>
     <jaeger.max.queue.size>100</jaeger.max.queue.size>
     <jaeger.sampling.rate>0.5</jaeger.sampling.rate>
     <jmeter.clients>100</jmeter.clients>
@@ -30,10 +30,10 @@
     <maven.docker.plugin.version>0.22.1</maven.docker.plugin.version>
     <maven.enforcer.plugin.version>3.0.0-M1</maven.enforcer.plugin.version>
     <maven.minimum.version>3.5.0</maven.minimum.version>
+    <maven.versions.plugin.version>2.5</maven.versions.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>jaeger-performance-tests</test.service.name>
     <user.agent.or.collector>AGENT</user.agent.or.collector>
-    <version.maven.plugin.version>2.5</version.maven.plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -158,12 +158,13 @@
     </plugins>
   </build>
 
+    <!-- Do mvn versions:display-dependency-updates for potential changes -->
   <reporting>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>${version.maven.plugin.version}</version>
+        <version>${maven.versions.plugin.version}</version>
         <reportSets>
           <reportSet>
             <reports>

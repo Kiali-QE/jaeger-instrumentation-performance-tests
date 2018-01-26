@@ -16,7 +16,8 @@
  */
 package org.hawkular.qe.wildflyswarm.util;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.Scope;
+import io.opentracing.Span;
 
 import javax.inject.Inject;
 import java.util.logging.Logger;
@@ -28,13 +29,14 @@ public class BackendService {
     private io.opentracing.Tracer tracer;
 
     public void action() throws InterruptedException {
-        try (ActiveSpan span = tracer.buildSpan("action").startActive()) {
-            anotherAction();
-        }
+        Span span = tracer.buildSpan("action").start();
+        anotherAction();
+        span.finish();
     }
 
     private void anotherAction() {
-        ActiveSpan activeSpan = tracer.activeSpan();
+        Scope scope = tracer.scopeManager().active();
+        Span activeSpan = scope.span();
         if (activeSpan != null) {
             activeSpan.setTag("anotherAction", "data");
         } else {
