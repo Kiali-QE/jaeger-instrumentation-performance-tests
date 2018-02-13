@@ -17,6 +17,7 @@
 package org.hawkular.qe.vertx.util;
 
 import io.opentracing.Scope;
+import io.opentracing.ScopeManager;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.vertx.ext.web.TracingHandler;
@@ -36,12 +37,15 @@ public class BackendService {
 
     public void action(RoutingContext routingContext) throws InterruptedException {
         Span span = tracer.buildSpan("action").start();
+        ScopeManager scopeManager = tracer.scopeManager();
+        scopeManager.activate(span, true);
         anotherAction();
         span.finish();
     }
 
     private void anotherAction() {
-        Scope scope = tracer.scopeManager().active();
+        ScopeManager scopeManager = tracer.scopeManager();
+        Scope scope = scopeManager.active();
         Span activeSpan = scope.span();
         if (activeSpan != null) {
             activeSpan.setTag("anotherAction", "data");
@@ -50,3 +54,4 @@ public class BackendService {
         }
     }
 }
+
