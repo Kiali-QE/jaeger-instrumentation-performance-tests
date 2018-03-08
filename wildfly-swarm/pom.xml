@@ -17,11 +17,11 @@
 
   <properties>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <javaee.version>7.0</javaee.version>
-    <opentracing.jaxrs.version>0.1.2</opentracing.jaxrs.version>
+    <javaee.version>8.0</javaee.version>
+    <opentracing.jaxrs.version>0.1.3</opentracing.jaxrs.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <test.service.name>wildfly-swarm-demo</test.service.name>
-    <wildfly.swarm.version>2018.2.0.Final</wildfly.swarm.version>
+    <wildfly.swarm.version>2018.3.2</wildfly.swarm.version>
   </properties>
 
   <dependencyManagement>

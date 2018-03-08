@@ -16,9 +16,6 @@
  */
 package org.hawkular.qe.common;
 
-import com.uber.jaeger.metrics.Metrics;
-import com.uber.jaeger.metrics.NullStatsReporter;
-import com.uber.jaeger.metrics.StatsFactoryImpl;
 import com.uber.jaeger.reporters.CompositeReporter;
 import com.uber.jaeger.reporters.LoggingReporter;
 import com.uber.jaeger.reporters.RemoteReporter;
@@ -73,8 +70,12 @@ public class TracerUtil {
                         + "] Max queue size: [" + JAEGER_MAX_QUEUE_SIZE + "]");
             }
 
-            Metrics metrics = new Metrics(new StatsFactoryImpl(new NullStatsReporter()));
-            Reporter remoteReporter = new RemoteReporter(sender, JAEGER_FLUSH_INTERVAL, JAEGER_MAX_QUEUE_SIZE, metrics);
+            RemoteReporter remoteReporter = new RemoteReporter.Builder()
+                    .withSender(sender)
+                    .withFlushInterval(JAEGER_FLUSH_INTERVAL)
+                    .withMaxQueueSize(JAEGER_MAX_QUEUE_SIZE)
+                    .build();
+
             if (USE_LOGGING_REPORTER.equalsIgnoreCase("true")) {
                 Reporter loggingRepoter = new LoggingReporter(logger);
                 compositeReporter = new CompositeReporter(remoteReporter, loggingRepoter);
@@ -83,7 +84,9 @@ public class TracerUtil {
             }
 
             Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
-            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME, compositeReporter, sampler)
+            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME)
+                    .withReporter(compositeReporter)
+                    .withSampler(sampler)
                     .build();
 
             return tracer;

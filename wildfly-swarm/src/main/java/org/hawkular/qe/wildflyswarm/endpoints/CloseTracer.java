@@ -20,7 +20,7 @@ import com.uber.jaeger.Tracer;
 import com.uber.jaeger.metrics.Counter;
 import com.uber.jaeger.metrics.Metrics;
 
-import javax.faces.bean.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

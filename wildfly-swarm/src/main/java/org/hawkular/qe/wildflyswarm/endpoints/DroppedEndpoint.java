@@ -19,7 +19,7 @@ package org.hawkular.qe.wildflyswarm.endpoints;
 import com.uber.jaeger.metrics.Counter;
 import com.uber.jaeger.metrics.Metrics;
 
-import javax.faces.bean.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,17 +40,14 @@ public class DroppedEndpoint {
         com.uber.jaeger.Tracer jaegerTracer = (com.uber.jaeger.Tracer) tracer;
         Metrics metrics = jaegerTracer.getMetrics();
 
-
-        //metrics.reporterQueueLength.
         Counter reporterDropped = metrics.reporterDropped;
         System.out.println(">>>> Counter is a " + reporterDropped.getClass().getCanonicalName());
         System.out.println("METRICS " + metrics);
-        // com.uber.jaeger.metrics.StatsFactoryImpl
 
-        Counter spansSampled = metrics.spansSampled;
-        Counter spansNotSampled = metrics.spansNotSampled;
+        Counter spansStartedSampled = metrics.spansStartedSampled;
+        Counter spansStartedNotSampled = metrics.spansStartedNotSampled;
 
-        String results = "Dropped [" + reporterDropped.toString() + "] Sampled [" + spansSampled.toString() + "] NOT Sampled [" + spansNotSampled.toString() + "]";
+        String results = "Dropped [" + reporterDropped.toString() + "] Sampled [" + spansStartedSampled.toString() + "] NOT Sampled [" + spansStartedNotSampled.toString() + "]";
 
         return Response.ok(results + " at " + new Date()).build();
     }

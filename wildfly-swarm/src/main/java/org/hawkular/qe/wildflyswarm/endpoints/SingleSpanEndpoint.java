@@ -16,7 +16,7 @@
  */
 package org.hawkular.qe.wildflyswarm.endpoints;
 
-import javax.faces.bean.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
