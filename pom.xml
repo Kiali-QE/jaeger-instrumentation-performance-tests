@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <fabric8.maven.plugin.version>3.5.33</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.38</fabric8.maven.plugin.version>
     <jaeger.agent.host>localhost</jaeger.agent.host>
     <jaeger.collector.host>jaeger-collector.jaeger-infra.svc</jaeger.collector.host>
     <jaeger.collector.port>14268</jaeger.collector.port>
@@ -27,7 +27,7 @@
     <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.docker.plugin.version>0.22.1</maven.docker.plugin.version>
+    <maven.docker.plugin.version>0.24.0</maven.docker.plugin.version>
     <maven.enforcer.plugin.version>3.0.0-M1</maven.enforcer.plugin.version>
     <maven.minimum.version>3.5.0</maven.minimum.version>
     <maven.versions.plugin.version>2.5</maven.versions.plugin.version>
