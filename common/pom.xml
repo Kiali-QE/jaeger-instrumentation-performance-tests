@@ -22,7 +22,7 @@
         <cassandra.driver.core.version>3.4.0</cassandra.driver.core.version>
         <elasticsearch.version>5.6.6</elasticsearch.version>
         <glassfish.jersey.client.version>2.26</glassfish.jersey.client.version>
-        <jackson.version>2.9.4</jackson.version>
+        <jackson.version>2.9.5</jackson.version>
         <javax.ws.rs.version>2.1</javax.ws.rs.version>
         <maven.failsafe.plugin.version>2.20.1</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>2.20.1</maven.surefire.plugin.version>
