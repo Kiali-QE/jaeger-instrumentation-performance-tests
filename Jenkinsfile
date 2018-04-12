@@ -109,7 +109,7 @@ pipeline {
         }
         stage('deploy Jaeger with ElasticSearch') {
             when {
-                expression { params.SPAN_STORAGE_TYPE == 'elasticsearch'  && params.TRACER_TYPE == 'JAEGER'}
+                expression { params.SPAN_STORAGE_TYPE == 'elasticSearch'  && params.TRACER_TYPE == 'JAEGER'}
             }
             steps {
                 sh '''
