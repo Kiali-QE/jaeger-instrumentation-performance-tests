@@ -16,15 +16,15 @@
  */
 package org.hawkular.qe.common;
 
-import com.uber.jaeger.reporters.CompositeReporter;
-import com.uber.jaeger.reporters.LoggingReporter;
-import com.uber.jaeger.reporters.RemoteReporter;
-import com.uber.jaeger.reporters.Reporter;
-import com.uber.jaeger.samplers.ProbabilisticSampler;
-import com.uber.jaeger.samplers.Sampler;
-import com.uber.jaeger.senders.HttpSender;
-import com.uber.jaeger.senders.Sender;
-import com.uber.jaeger.senders.UdpSender;
+import io.jaegertracing.reporters.CompositeReporter;
+import io.jaegertracing.reporters.LoggingReporter;
+import io.jaegertracing.reporters.RemoteReporter;
+import io.jaegertracing.reporters.Reporter;
+import io.jaegertracing.samplers.ProbabilisticSampler;
+import io.jaegertracing.samplers.Sampler;
+import io.jaegertracing.senders.HttpSender;
+import io.jaegertracing.senders.Sender;
+import io.jaegertracing.senders.UdpSender;
 import io.opentracing.Tracer;
 import io.opentracing.noop.NoopTracerFactory;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class TracerUtil {
             }
 
             Sampler sampler = new ProbabilisticSampler(JAEGER_SAMPLING_RATE);
-            tracer = new com.uber.jaeger.Tracer.Builder(TEST_SERVICE_NAME)
+            tracer = new io.jaegertracing.Tracer.Builder(TEST_SERVICE_NAME)
                     .withReporter(compositeReporter)
                     .withSampler(sampler)
                     .build();

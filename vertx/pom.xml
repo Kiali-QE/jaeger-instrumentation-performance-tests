@@ -52,7 +52,7 @@
 
 		<!-- Jaeger version -->
 		<dependency>
-			<groupId>com.uber.jaeger</groupId>
+			<groupId>io.jaegertracing</groupId>
 			<artifactId>jaeger-core</artifactId>
 		</dependency>
 

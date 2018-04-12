@@ -16,9 +16,9 @@
  */
 package org.hawkular.qe.wildflyswarm.endpoints;
 
-import com.uber.jaeger.Tracer;
-import com.uber.jaeger.metrics.Counter;
-import com.uber.jaeger.metrics.Metrics;
+import io.jaegertracing.Tracer;
+import io.jaegertracing.metrics.Counter;
+import io.jaegertracing.metrics.Metrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ public class CloseTracer {
     @Produces("text/plain")
     public Response doGet() throws InterruptedException {
         logger.info(">>>> Closing tracer");
-        com.uber.jaeger.Tracer jaegerTracer = (com.uber.jaeger.Tracer) tracer;
+        io.jaegertracing.Tracer jaegerTracer = (io.jaegertracing.Tracer) tracer;
         jaegerTracer.close();
 
         return Response.ok("Closed tracer at " + new Date()).build();

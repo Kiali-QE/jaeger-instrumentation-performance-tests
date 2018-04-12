@@ -16,8 +16,8 @@
  */
 package org.hawkular.qe.wildflyswarm.endpoints;
 
-import com.uber.jaeger.metrics.Counter;
-import com.uber.jaeger.metrics.Metrics;
+import io.jaegertracing.metrics.Counter;
+import io.jaegertracing.metrics.Metrics;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ public class DroppedEndpoint {
     @GET
     @Produces("text/plain")
     public Response doGet() throws InterruptedException {
-        com.uber.jaeger.Tracer jaegerTracer = (com.uber.jaeger.Tracer) tracer;
+        io.jaegertracing.Tracer jaegerTracer = (io.jaegertracing.Tracer) tracer;
         Metrics metrics = jaegerTracer.getMetrics();
 
         Counter reporterDropped = metrics.reporterDropped;
