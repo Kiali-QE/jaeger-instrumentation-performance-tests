@@ -13,7 +13,7 @@ pipeline {
         choice(choices: 'JAEGER\nNOOP\nNONE', description: 'Which tracer to use', name: 'TRACER_TYPE')
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
         choice(choices: 'COLLECTOR\nAGENT', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
-        choice(choices: 'cassandra\nelasticSearch', description: 'Span Storage', name: 'SPAN_STORAGE_TYPE')
+        choice(choices: 'cassandra\nelasticsearch', description: 'Span Storage', name: 'SPAN_STORAGE_TYPE')
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
         string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
@@ -84,7 +84,7 @@ pipeline {
         }
         stage('deploy ElasticSearch') {
             when {
-                expression { params.SPAN_STORAGE_TYPE == 'elasticSearch'}
+                expression { params.SPAN_STORAGE_TYPE == 'elasticsearch'}
             }
             steps {
                 sh '''
@@ -109,7 +109,7 @@ pipeline {
         }
         stage('deploy Jaeger with ElasticSearch') {
             when {
-                expression { params.SPAN_STORAGE_TYPE == 'elasticSearch'  && params.TRACER_TYPE == 'JAEGER'}
+                expression { params.SPAN_STORAGE_TYPE == 'elasticsearch'  && params.TRACER_TYPE == 'JAEGER'}
             }
             steps {
                 sh '''
