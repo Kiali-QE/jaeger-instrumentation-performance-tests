@@ -13,7 +13,8 @@ pipeline {
         choice(choices: 'JAEGER\nNOOP\nNONE', description: 'Which tracer to use', name: 'TRACER_TYPE')
         choice(choices: 'wildfly-swarm\nspring-boot\nvertx', description: 'Which target application to run against', name: 'TARGET_APP')
         choice(choices: 'COLLECTOR\nAGENT', description: 'Write spans to the agent or the collector', name: 'USE_AGENT_OR_COLLECTOR')
-        choice(choices: 'cassandra\nelasticsearch', description: 'Span Storage', name: 'SPAN_STORAGE_TYPE')
+        choice(choices: 'elasticsearch\ncassandra',  name: 'SPAN_STORAGE_TYPE')
+
         string(name: 'JMETER_CLIENT_COUNT', defaultValue: '100', description: 'The number of client threads JMeter should create')
         string(name: 'ITERATIONS', defaultValue: '1000', description: 'The number of iterations each client should execute')
         string(name: 'JAEGER_AGENT_HOST', defaultValue: 'localhost', description: 'Host where the agent is running')
@@ -24,6 +25,9 @@ pipeline {
         string(name: 'KEYSPACE_NAME', defaultValue: 'jaeger_v1_dc1', description: 'Name of the Jaeger keyspace in Cassandra')
         string(name: 'ELASTICSEARCH_HOST', defaultValue: 'elasticsearch', description: 'ElasticShift host')
         string(name: 'ELASTICSEARCH_PORT', defaultValue: '9200', description: 'ElasticShift port')
+        string(name: 'ES_BULK_SIZE', defaultValue: '10000000', description: '--es.bulk.size')
+        string(name: 'ES_BULK_WORKERS', defaultValue: '10', description: '--es.bulk.workers')
+        string(name: 'ES_BULK_FLUSH_INTERVAL', defaultValue: '1s', description: '--es.bulk.flush-interval')
         string(name: 'EXAMPLE_PODS', defaultValue: '1', description: 'The number of pods to deploy for the example application')
         string(name: 'COLLECTOR_PODS', defaultValue: '1', description: 'The number of pods to deploy for the Jaeger Collector')
         string(name: 'RAMPUP', defaultValue: '0', description: 'The number of seconds to take to start all jmeter clients')
@@ -48,8 +52,12 @@ pipeline {
         }
         stage('Delete Jaeger') {
             steps {
-                sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
-                sh 'env | sort'
+                sh '''
+                    curl https://raw.githubusercontent.com/RHsyseng/docker-rhel-elasticsearch/5.x/es-cluster-deployment.yml --output es-cluster-deployment.yml
+                    oc delete --filename ./es-cluster-deployment.yml --grace-period=1 || true
+                    oc delete all,template,daemonset,configmap -l jaeger-infra
+                    env || sort
+                '''
             }
         }
         stage('Cleanup, checkout, build') /* Change to checkout scm */ {
@@ -88,11 +96,22 @@ pipeline {
             }
             steps {
                 sh '''
-                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/elasticsearch.yml --output elasticsearch.yml
-                    oc create --filename elasticsearch.yml
+                    curl https://raw.githubusercontent.com/RHsyseng/docker-rhel-elasticsearch/5.x/es-cluster-deployment.yml --output es-cluster-deployment.yml
+                    oc create -f es-cluster-deployment.yml
+                    while true; do
+                        replicas=$(oc get statefulset/elasticsearch -o=jsonpath='{.status.readyReplicas}')
+                        ((replicas > 1)) && break
+                        sleep 1
+                     done
+
+                     oc env statefulset/elasticsearch NAMESPACE=${PROJECT_NAME} --namespace ${PROJECT_NAME}
+                     oc adm policy add-role-to-user view --serviceaccount=elasticsearch
+                     # restart to apply changes
+                     oc delete pods -l app=elasticsearc
                 '''
             }
         }
+
         stage('deploy Jaeger with Cassandra') {
             when {
                 expression { params.SPAN_STORAGE_TYPE == 'cassandra' && params.TRACER_TYPE == 'JAEGER' }
@@ -115,7 +134,7 @@ pipeline {
                 sh '''
                     curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/configmap-elasticsearch.yml --output configmap-elasticsearch.yml
                     oc create -f configmap-elasticsearch.yml
-                    curl https://raw.githubusercontent.com/kevinearls/jaeger-openshift/working/production/jaeger-production-template.yml --output jaeger-production-template.yml
+                    curl https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/production/jaeger-production-template.yml --output jaeger-production-template.yml
                     ./updateTemplateForElasticSearch.sh
                     oc process ${DEPLOYMENT_PARAMETERS} -pES_BULK_SIZE=${ES_BULK_SIZE} -pES_BULK_WORKERS=${ES_BULK_WORKERS} -pES_BULK_FLUSH_INTERVAL=${ES_BULK_FLUSH_INTERVAL} -f jaeger-production-template.yml  | oc create -n ${PROJECT_NAME} -f -
                 '''
@@ -136,12 +155,13 @@ pipeline {
             steps{
                 sh '''
                     if [ ! -e /var/lib/jenkins/tools/apache-jmeter-4.0/bin/jmeter ]; then
-                        cd ~/tools
+                        pushd ~/tools
                         curl http://apache.mediamirrors.org//jmeter/binaries/apache-jmeter-4.0.tgz --output apache-jmeter-4.0.tgz
                         gunzip apache-jmeter-4.0.tgz
                         tar -xvf apache-jmeter-4.0.tar
                         rm apache-jmeter-4.0.tar
                         ls -alF
+                        popd
                     fi
 
                     rm -rf log.txt reports
@@ -177,6 +197,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh 'oc delete --filename ./es-cluster-deployment.yml --grace-period=1 || true'
                     sh 'oc delete all,template,daemonset,configmap -l jaeger-infra'
                 }
             }
@@ -187,7 +208,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'mvn -f ${TARGET_APP}/pom.xml -Popenshift fabric8:undeploy'
+                    sh 'mvn -f ${TARGET_APP}/pom.xml -Popenshift fabric8:undeploy || true'
                 }
             }
         }
