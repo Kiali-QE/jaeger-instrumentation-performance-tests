@@ -103,11 +103,6 @@ pipeline {
                         ((replicas > 1)) && break
                         sleep 1
                      done
-
-                     oc env statefulset/elasticsearch NAMESPACE=${PROJECT_NAME} --namespace ${PROJECT_NAME}
-                     oc adm policy add-role-to-user view --serviceaccount=elasticsearch
-                     # restart to apply changes
-                     oc delete pods -l app=elasticsearc
                 '''
             }
         }
